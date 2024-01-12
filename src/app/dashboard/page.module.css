@@ -1,0 +1,19 @@
+.center {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.cell {
+  height: auto;
+  width: auto;
+  overflow: auto;
+}
+
+.rightAlign {
+  text-align: right;
+  align-items: right;
+  margin-right: 10px;
+}

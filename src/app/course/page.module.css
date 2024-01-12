@@ -1,0 +1,9 @@
+.staged th,
+.staged td {
+  color: blue;
+}
+
+.unstaged th,
+.unstaged td {
+  color: black;
+}

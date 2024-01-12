@@ -1,10 +1,33 @@
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+.visible {
+  display: block;
+  visibility: visible;
+}
+
+.hr {
+  color: gray;
+  background-color: gray;
+  width: 80%;
+  height: 2px;
+}
+
+.top_right {
+  position: absolute;
+  top: 1rem;
+  right: 20%;
+}
+
 .main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
-  min-height: 100vh;
+  padding: 4rem 20% 1rem;
+  overflow: visible;
 }
 
 .description {
@@ -16,6 +39,14 @@
   width: 100%;
   z-index: 2;
   font-family: var(--font-mono);
+}
+
+.figcaption {
+  font-size: 0.9rem;
+  max-width: 900px;
+  margin: auto;
+  font-style: italic;
+  text-align: center;
 }
 
 .description a {
@@ -34,6 +65,21 @@
   border-radius: var(--border-radius);
 }
 
+.bibtex_box {
+  background-color: #f2f2f2; /* Grey background color */
+  padding: 10px; /* Padding around the content */
+  border-radius: 8px; /* Rounded corners for the box */
+  font-family: 'Courier New', monospace; /* Use monospace font for BibTeX entry */
+  margin: 1rem 0;
+}
+
+.bibtex_box pre {
+  margin-bottom: 0;
+  min-width: 0;
+  max-width: 80vw;
+  overflow-x: auto;
+}
+
 .code {
   font-weight: 700;
   font-family: var(--font-mono);
@@ -49,14 +95,36 @@
 .card {
   padding: 1rem 1.2rem;
   border-radius: var(--border-radius);
-  background: rgba(var(--card-rgb), 0);
-  border: 1px solid rgba(var(--card-border-rgb), 0);
-  transition: background 200ms, border 200ms;
+  background: white;
 }
 
-.card span {
-  display: inline-block;
-  transition: transform 200ms;
+.cardCenter {
+  padding: 1rem 0rem;
+  border-radius: var(--border-radius);
+  background: white;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  margin: auto;
+}
+
+.card b,
+.card a {
+  color: royalblue;
+}
+
+.card h1,
+.card h3 {
+  margin: 0.75rem 0;
+}
+
+.card h4,
+.card h5,
+.card h6 {
+  opacity: 0.8;
+  padding: 0.2rem 0 0.1rem
 }
 
 .card h2 {
@@ -65,60 +133,34 @@
 }
 
 .card p {
-  margin: 0;
-  opacity: 0.6;
-  font-size: 0.9rem;
+  margin: 0 0 1rem;
+  opacity: 1;
+  font-size: 1rem;
   line-height: 1.5;
-  max-width: 30ch;
 }
 
 .center {
+  margin: auto;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 4rem 0;
 }
 
-.center::before {
-  background: var(--secondary-glow);
-  border-radius: 50%;
-  width: 480px;
-  height: 360px;
-  margin-left: -400px;
+.button-box {
+  display: flex;
+  margin: 5px;
+  align-items: center;
 }
 
-.center::after {
-  background: var(--primary-glow);
-  width: 240px;
-  height: 180px;
-  z-index: -1;
-}
-
-.center::before,
-.center::after {
-  content: '';
-  left: 50%;
-  position: absolute;
-  filter: blur(45px);
-  transform: translateZ(0);
+.center.vert {
+  vertical-align: middle;
 }
 
 .logo {
   position: relative;
 }
 /* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  .card:hover {
-    background: rgba(var(--card-rgb), 0.1);
-    border: 1px solid rgba(var(--card-border-rgb), 0.15);
-  }
-
-  .card:hover span {
-    transform: translateX(4px);
-  }
-}
-
 @media (prefers-reduced-motion) {
   .card:hover span {
     transform: none;
@@ -127,6 +169,21 @@
 
 /* Mobile */
 @media (max-width: 700px) {
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4rem 1rem;
+    overflow: visible;
+  }
+
+  .top_right {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
   .content {
     padding: 4rem;
   }
@@ -138,8 +195,20 @@
     text-align: center;
   }
 
+  .bibtex_box {
+    min-width: 300px;
+    background-color: #f2f2f2; /* Grey background color */
+    padding: 10px; /* Padding around the content */
+    border-radius: 8px; /* Rounded corners for the box */
+    font-family: 'Courier New', monospace; /* Use monospace font for BibTeX entry */
+  }
+
   .card {
-    padding: 1rem 2.5rem;
+    padding: 1rem 1rem;
+  }
+
+  .card h1 {
+    padding: 0.5rem 0;
   }
 
   .card h2 {
@@ -147,12 +216,8 @@
   }
 
   .center {
-    padding: 8rem 0 6rem;
-  }
-
-  .center::before {
-    transform: none;
-    height: 300px;
+    text-align: center;
+    justify-content: center;
   }
 
   .description {
