@@ -27,6 +27,7 @@ import {
   faBars,
   faTimes
 } from '@fortawesome/free-solid-svg-icons'
+import NavBar from '../../components/NavBar'
 
 const TimelineSection = () => (
   <div className="settings-section-clean">
@@ -171,8 +172,18 @@ export default function Page () {
     { id: 'admins', label: 'Course Admins', icon: faUserShield },
   ];
 
+  // Create breadcrumbs for course settings
+  const breadcrumbs = [
+    {
+      label: courseData?.courseName || className?.toUpperCase() || 'Course Settings',
+      href: null // Current page, so no href
+    }
+  ];
+
   return (
-    <div className="settings-page">
+    <div className="page-wrapper">
+      <NavBar breadcrumbs={breadcrumbs} />
+      <div className="settings-page">
         {/* Mobile Menu Button */}
         <button 
           className="mobile-menu-btn"
@@ -247,6 +258,7 @@ export default function Page () {
             {renderSection()}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

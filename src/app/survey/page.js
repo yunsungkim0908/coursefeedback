@@ -19,8 +19,8 @@ import Swal from "sweetalert2";
 import { useMediaQuery } from '@react-hook/media-query';
 
 import { firebase_app, db, auth } from '../../components/firebase'
-import { NavBarContainer } from '../../components/container.js'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import NavBar from '../../components/NavBar'
 import { Loading } from '../../components/Loading/loading.js'
 
 const SuccessMessage = (succMsg) => {
@@ -214,9 +214,26 @@ export default function SurveyPage () {
   }
 
 
+  // Create breadcrumbs for survey page
+  const breadcrumbs = [];
+  if (isPreview && callNumber && classHash) {
+    breadcrumbs.push(
+      {
+        label: callNumber.toUpperCase(),
+        href: `/course?callNumber=${callNumber}&classHash=${classHash}&user=preview`
+      },
+      {
+        label: 'Preview Survey Page',
+        href: null
+      }
+    );
+  }
+
   return (
-    <NavBarContainer>
-      <div className="container">
+    <div className="page-wrapper">
+      <NavBar breadcrumbs={breadcrumbs} />
+      <div className="page-content">
+        <div className="container">
         <div className="row">
           <div className="col">
             <div className="response-card mt-4 mx-auto">
@@ -229,8 +246,18 @@ export default function SurveyPage () {
                     href={{
                       pathname: "/course",
                       search: `?callNumber=${callNumber}&classHash=${classHash}&user=preview`
-                  }}>
-                    Go back
+                  }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      color: '#3b82f6',
+                      textDecoration: 'none',
+                      fontWeight: '500'
+                    }}
+                  >
+                    <span style={{ fontSize: '14px', lineHeight: '1' }}>←</span>
+                    <span>Go back</span>
                   </Link>
                 </p>}
               </div>
@@ -280,8 +307,9 @@ export default function SurveyPage () {
             </Formik>
           </div>
         </div>
+        </div>
       </div>
-    </NavBarContainer>
+    </div>
   );
 };
 

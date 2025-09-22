@@ -10,13 +10,13 @@ import { db, auth } from '../../components/firebase'
 import { collection, query, getDocs, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faSignOutAlt, 
   faPlus, 
   faChartLine, 
   faUsers, 
   faClock,
   faGraduationCap
 } from '@fortawesome/free-solid-svg-icons'
+import NavBar from '../../components/NavBar'
 
 const QuickStats = ({ userCourses, coursesLoading }) => {
   const totalCourses = userCourses.length;
@@ -130,32 +130,7 @@ export default function Page() {
   if (signedIn){
     return (
       <div className="dashboard-page">
-        {/* Navigation Header */}
-        <nav className="dashboard-nav">
-          <div className="nav-container">
-            <div className="nav-left">
-              <div className="nav-logo">
-                <FontAwesomeIcon icon={faChartLine} />
-                <span>HRCF Dashboard</span>
-              </div>
-            </div>
-            <div className="nav-right">
-              <div className="user-info">
-                <div className="user-details">
-                  <span className="user-name">{auth.currentUser?.displayName || 'User'}</span>
-                  <span className="user-email">{auth.currentUser?.email}</span>
-                </div>
-                <button 
-                  onClick={() => auth.signOut()}
-                  className="sign-out-btn"
-                  title="Sign Out"
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} />
-                </button>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <NavBar />
 
         <div className="dashboard-container">
           {/* Welcome Section */}
