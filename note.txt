@@ -1,0 +1,6 @@
+1. darkmode currently dealt with !important
+2. FOUC survey page
+3. login glitch
+4. roster alert
+5. admin update takes place on monday only.
+6. email verification

@@ -81,7 +81,7 @@ const FixedRow = (props) => {
           value={props.prompt}
         />
       </Col>
-      <Col sm="3">
+      <Col sm="3" className='vertical-center'>
         <Dropdown>
           <Dropdown.Toggle
             variant="outline-secondary" id="dropdown-basic" disabled
@@ -126,7 +126,7 @@ export const EditableRow = ({index, formikProps}) => {
           </div>
         </div>
       </Col>
-      <Col sm="4">
+      <Col sm="4" className='vertical-center'>
         <div className='button-box'>
           <QuestionTypeDropdown className='flex-item' index={index} freezeQues={false}/>
           <Button className='flex-item' variant="danger" type="button" disabled={false}

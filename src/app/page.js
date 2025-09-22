@@ -20,11 +20,10 @@ const Faq = () => {
       <Accordion.Item eventKey="4">
         <Accordion.Header><b>How do I get started?</b></Accordion.Header>
         <Accordion.Body>
-          If you don't have an account, click on the "Sign In" button to create an account. Log in and follow the instructions on completing the "Create a Course Survey" form, then send us (hrcf@cs.stanford.edu) the following items (Note: for Stanford courses, just the Course ID and your course call number will do.):
+          If you don't have an account, click on the "Sign In" button to create an account using your <b>institutional email</b>. Log in and follow the instructions on completing the "Create a Course Survey" form, then send us (hrcf@cs.stanford.edu) the following items:
           <ol>
+            <li>Your school profile page (e.g., a link to your faculty page) to verify your email and affiliation.</li>
             <li>The unique course ID generated upon completing the form.</li>
-            <li>The name of your institution and department.</li>
-            <li>The course syllabus</li>
           </ol>
           We will then review these information and approve your course survey!
           <br/><br/>

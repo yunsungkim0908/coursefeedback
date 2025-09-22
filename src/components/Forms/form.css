@@ -10,17 +10,19 @@ label {
 .question-label {
     font-size: 24px;
     font-weight: 400;
+    color:black;
 }
 
 .description {
-  color: "gray";
-  margin-bottom: "0.6rem";
+  color: gray;
+  margin-bottom: 0.6rem;
 }
 
 .form-label {
   display: block;
   margin-bottom: 0;
   font-size: 1.2rem;
+  color: black;
   white-space: pre-wrap;
 }
 
@@ -28,10 +30,19 @@ label {
   min-height:24px;
 }
 
+.card-body h1 {
+  color: black;
+}
+
+.card-body p {
+  color: black;
+}
+
 .response-card {
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   background: white;
+  color: black;
   max-width: 800px;
 }
 
@@ -63,6 +74,7 @@ label {
   border-bottom: 1px solid lightgray;
   border-radius: 1px;
   outline: none;
+  color: black;
 }
 
 .text-input::placeholder {
@@ -87,6 +99,7 @@ label {
   padding: 8px;
   border-radius: 5px;
   height: 100px;
+  color: black;
 }
 
 .text-area-input::placeholder {
@@ -104,7 +117,6 @@ label {
   border-radius: 3px;
   background-color: #007bff;
   /* background-color: #343a40;*/
-  color: white;
 
   padding-left: 5px;
 
@@ -163,6 +175,7 @@ label {
 .button-group {
   width: 100%;
   margin: auto;
+  padding: 0.65rem 0.5rem;
 }
 
 .radio label {

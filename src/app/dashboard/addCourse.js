@@ -326,7 +326,7 @@ export const AddCourse = (props) => {
     const write = async () => {
       batch.set(courseRef, newValues)
       batch.set(questionRef, {"previous-questions": [], "questions": []})
-      batch.set(rosterRef, {"id": [], "name": []})
+      batch.set(rosterRef, {"roster": []})
       return batch.commit()
     }
 
@@ -396,11 +396,10 @@ export const AddCourse = (props) => {
       <h4>Instructions</h4>
       <ol>
         <li>Create a course survey by filling in the form below and clicking "Create."</li>
-        <li><b style={{color: 'blue'}}>Email the following items to the HRCF admin (hrcf@cs.stanford.edu)</b> to get the survey approved. (For Stanford courses, your course ID and call number will suffice.)
+        <li><b style={{color: 'blue'}}>Email the following items to the HRCF admin (hrcf@cs.stanford.edu)</b> to get the survey approved.
           <ol>
-            <li>The Course ID</li>
-            <li>Name of your institution and department</li>
-            <li>Your course syllabus</li>
+            <li>Your school profile page (e.g., a link to your faculty page) to verify your email and affiliation.</li>
+            <li>The unique course ID generated upon completing the form.</li>
           </ol>
         </li>
         <li>While we review your survey request, go to the course settings link in "Your Courses" to finish setting up the survey.</li>

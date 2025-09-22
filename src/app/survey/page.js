@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import ToggleButton from 'react-bootstrap/ToggleButton'
-import React, { useState, useRef, useEffect } from 'react';
+import React, { Suspense, useState, useRef, useEffect } from 'react';
 // import firebase from "firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../main.css"
@@ -21,6 +21,7 @@ import { useMediaQuery } from '@react-hook/media-query';
 import { firebase_app, db, auth } from '../../components/firebase'
 import { NavBarContainer } from '../../components/container.js'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { Loading } from '../../components/Loading/loading.js'
 
 const SuccessMessage = (succMsg) => {
     Swal.fire({
@@ -75,7 +76,7 @@ export const QuestionBox = ({question, index}) => {
 }
 
 export default function SurveyPage () {
-  const [questions, setQuestions] = useState({'questions': [], 'classWeek': ""})
+  const [questions, setQuestions] = useState({'questions': [], 'classWeek': null})
   const [invalidURL, setInvalidURL] = useState(false)
   const [isPreview, setIsPreview] = useState(false)
 
@@ -191,9 +192,13 @@ export default function SurveyPage () {
     }
   }
 
-  const classWeek = ("classWeek" in questions) ? questions["classWeek"] : ""
+  const classWeek = (questions.classWeek) 
+    ? `Week ${questions["classWeek"]}`
+    : ''
 
-  const header = isPreview? `Preview Survey Page for ${callNumber.toUpperCase()}` : `Week ${classWeek} Feedback for ${callNumber.toUpperCase()}`
+  const header = isPreview
+    ? `Preview Survey Page for ${callNumber.toUpperCase()}`
+    : `${classWeek} Feedback for ${callNumber.toUpperCase()}`
   const desc = (isPreview
     ? 'This is a preview of the survey page that your students would get to see.'
     : 'In '+callNumber.toUpperCase()+', we will use a small amount of student feedback each week to infer higher resolution information on how the class is going. Thank you for your time!')
@@ -246,7 +251,7 @@ export default function SurveyPage () {
                     {
                       if (closed) {
                         return (
-                          <div className="response-card mt-4">
+                          <div className="response-card mt-4 mx-auto">
                           <div className="card-body" >
                             <p style={{'fontSize':'1.2rem'}}>We're sorry, but this week's survey has been closed.</p>
                           </div>
@@ -300,7 +305,9 @@ const ButtonInput = ({question, index}) => {
   return <>
     <div className="response-card mt-4 mx-auto">
     <div className="card-body">
-      <p style={{'fontSize':'1.2rem'}}><b>{index+1}. </b>{question.prompt}</p>
+      <label className="form-label">
+        <b>{index+1}. </b>{question.prompt}
+      </label>
       <ButtonGroup
         vertical={isNarrowScreen}
         className="button-group"

@@ -40,9 +40,9 @@ const RosterForm = (props) => {
   const [staged, setStaged] = useState(false)
 
   useEffect(() => {
-    const classRef = doc(props.db, 'courses', props.classHash)
+    const rosterRef = doc(props.db, 'rosters', props.classHash)
 
-    getDoc(classRef)
+    getDoc(rosterRef)
       .then((snap) => {
         const data = snap.data()
         setOldRoster(data['roster'] || [])
@@ -98,9 +98,9 @@ const RosterForm = (props) => {
       return
     }
 
-    const classRef = doc(props.db, 'courses', props.classHash)
+    const rosterRef = doc(props.db, 'rosters', props.classHash)
     const timestamp = getPstTimestamp()
-    updateDoc(classRef, {'roster': roster, 'lastRosterUpdate': timestamp})
+    updateDoc(rosterRef, {'roster': roster, 'lastRosterUpdate': timestamp})
     .then(() => { 
       SuccessMessage("Upload Complete!")
       setStaged(false)
@@ -111,10 +111,6 @@ const RosterForm = (props) => {
       console.log(error)
       ErrorMessage("Invalid access. Are you using the correct URL?") })
   }
-
-  console.log(staged)
-  console.log(roster)
-  console.log(oldRoster)
 
   let countText
   let lastUpdateText = ""

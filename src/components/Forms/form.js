@@ -63,7 +63,7 @@ export const StarsInput = (props) => {
         <Field name={props.name} id={props.name} type="number">
           {({ field: { value }, form: { setFieldValue } }) => (
             <div>
-              <label htmlFor={props.name} className={"form-label"}>
+              <label htmlFor={props.name} className="form-label">
                 {props.title}
               </label>
               <div className="mt-2">
@@ -117,7 +117,6 @@ export const TextAreaInputCard = ({ label, ...props }) => {
   const [textAreaHeight, setTextAreaHeight] = useState("auto")
 
   useEffect(() => {
-    console.log(`${textAreaRef.current.scrollHeight}px`)
 		setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
 	}, [field.value]);
 
