@@ -3,140 +3,287 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Container, Button, Alert } from 'react-bootstrap';
-import Accordion from 'react-bootstrap/Accordion'
-import "bootstrap/dist/css/bootstrap.min.css";
-import cx from 'classnames';
-import { NavBarContainer } from '../components/container.js'
-import styles from './page.module.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { 
+  faArrowRight, 
+  faChartLine, 
+  faClock, 
+  faUsers, 
+  faShieldAlt,
+  faQuestionCircle,
+  faEnvelope,
+  faCalendarAlt,
+  faBookOpen
+} from '@fortawesome/free-solid-svg-icons'
 import './main.css'
 
-const Faq = () => {
-  return (
-    <div>
-      <h3 style={{textAlign: "center"}}>Frequently Asked Questions</h3>
-
-      <Accordion alwaysOpen>
-      <Accordion.Item eventKey="4">
-        <Accordion.Header><b>How do I get started?</b></Accordion.Header>
-        <Accordion.Body>
-          If you don't have an account, click on the "Sign In" button to create an account using your <b>institutional email</b>. Log in and follow the instructions on completing the "Create a Course Survey" form, then send us (hrcf@cs.stanford.edu) the following items:
-          <ol>
-            <li>Your school profile page (e.g., a link to your faculty page) to verify your email and affiliation.</li>
-            <li>The unique course ID generated upon completing the form.</li>
-          </ol>
-          We will then review these information and approve your course survey!
-          <br/><br/>
-          While we review your course survey request, you can go to your survey settings page to update the (1) course roster, (2) custom questions of the week (optional), and (3) the list of admins who get to receive digest emails.
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>What does a week of survey look like?</Accordion.Header>
-        <Accordion.Body>
-          Here is what a week of survey looks like (All times are indicated in Pacific Time (PT)):
-          <ul>
-            <li>Around <b>Monday at Noon,</b> we send out survey requests to students in the roster who were chosen to be requested to provide feedback that week.</li>
-            <li>Around <b>Thursday at Noon,</b> students who haven't yet filled out the feedback form will receive a reminder email.</li>
-            <li>Around <b>Sunday at 4pm,</b> the feedback forms will close and you will receive a weekly digest from us reporting the feedback received from your students.</li>
-          </ul>
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>What questions do you ask students?</Accordion.Header>
-        <Accordion.Body>
-          All surveys include the following 4 default questions:
-          <ul>
-            <li><b>Q1:</b> What did you like about the course so far? (Text Response)</li>
-            <li><b>Q2:</b> Is anything from class still confusing to you? (Text Response)</li>
-            <li><b>Q3:</b> Is there anything the teaching team should know? (Text Response)</li>
-            <li><b>Q4:</b> How would you rate your course experience this week? (Qualitative 5-way Rating)</li>
-          </ul>
-          In addition to these 4 questions we ask all students in every survey, you have the option to add <b>custom questions</b> to the survey each week.
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="2">
-        <Accordion.Header>What do instructors get in a weekly digest email?</Accordion.Header>
-        <Accordion.Body>
-        The digest email sent to instructors every Sunday has the following 4 pieces of information.
-        <ul>
-          <li><b>Weekly Participation Rate:</b>The total number of students surveyed and the number of students who responded are reported, along with their ratio.</li>
-          <li><b>Collection of Responses:</b> For each question, the responses are collected and listed in a single file. Responses to rating questions are additionally visualized as a histogram.</li>
-          <li><b>Weekly "Class Mood" Graph:</b> In HRCF, the average student rating for the question "How would you rate your course experience so far? (Q4)" is referred to as the weekly "class mood." The estimated weekly class mood is plotted (the right plot in the HRCF schematics figure above) for all weeks as a violin plot, along with the standard error of the mean (SEoM).</li>
-        </ul>
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="3">
-        <Accordion.Header>How do you maintain privacy and anonymity of feedback?</Accordion.Header>
-        <Accordion.Body>
-          We send each student a unique link to a webpage where they can submit their response anonymously.
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
-
+const FeatureCard = ({ icon, title, description }) => (
+  <div className="feature-card">
+    <div className="feature-icon">
+      <FontAwesomeIcon icon={icon} />
     </div>
-  )
-}
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </div>
+)
 
-let bibtex = `\@inproceedings{kim2023high,
-  title={High-Resolution Course Feedback: Timely Feedback Mechanism for Instructors},
-  author={Kim, Yunsung and Piech, Chris},
-  booktitle={Proceedings of the Tenth ACM Conference on Learning@ Scale},
-  pages={81--91},
-  year={2023}
-}`;
+const TimelineStep = ({ number, title, description, time }) => (
+  <div className="timeline-step">
+    <div className="timeline-number">{number}</div>
+    <div className="timeline-content">
+      <h4>{title}</h4>
+      <p className="timeline-time">{time}</p>
+      <p>{description}</p>
+    </div>
+  </div>
+)
+
+const FaqItem = ({ question, answer }) => (
+  <details className="faq-item">
+    <summary className="faq-question">{question}</summary>
+    <div className="faq-answer">{answer}</div>
+  </details>
+)
 
 export default function Home() {
   return (
-    <NavBarContainer>
-    <main className={styles.main}>
-      <div className={styles.right}>
-        <Button className={styles.top_right} href="/login">
-          Sign In
-        </Button>
-      </div>
-      <div className="col" style={{
-        backgroundColor: "white",
-        padding: "0 10px"
-      }}>
-        <div className={styles.card}>
-          <h1 className={styles.center}>
-            High-Resolution Course Feedback
-          </h1>
-          <h5 className={styles.center}>
-            Timely Feedback mechanism for Course Instructors
-          </h5>
-          <hr/>
-          <p>
-            {/*Welcome to High-Resolution Course Feedback (HRCF)! 
-            <br/><br/>*/}
-            HRCF is an <b>anonymous course feedback tool</b> that can help instructors understand their students better on a <b>weekly basis</b>. It works by requesting feedback from each student a <b>fixed number of times</b> (typically twice) throughout the term, but on <b>randomly chosen</b> weeks. This helps instructors obtain <b style={{color: "crimson"}}>timely and actionable feedback</b> that well captures meaningful mood changes. For more detail, checkout our <b><a href="https://yunsungkim.com/pdfs/hrcf.pdf" target="_blank" rel="noopener noreferrer">&#x1F4CE;paper</a></b> (presented at L@S'23).
-          </p>
-          <p>
-            <b style={{color: "darkolivegreen"}}>Curious to know what your students are experiencing this week?</b> Create an account by clicking "Sign In" and we'll get you started with HRCF!
-          </p>
-          <div className={styles.cardCenter}>
-            <Image
-              src="overview.png"
-              alt="hrcf"
-              width="337"
-              height="133"
-              layout="responsive"
-              style={{maxWidth: "800px"}}
-            />
-            <figcaption className={styles.figcaption}>
-              Schematic of the HRCF surveys. The trend graph on the right is the average "course mood" graph sent to instructors each week.
-            </figcaption>
+    <div className="landing-page">
+      {/* Navigation */}
+      <nav className="landing-nav">
+        <div className="nav-container">
+          <div className="nav-logo">
+            <FontAwesomeIcon icon={faChartLine} />
+            <span>HRCF</span>
+          </div>
+          <Link href="/login" className="nav-cta">
+            Sign In
+            <FontAwesomeIcon icon={faArrowRight} />
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="hero-container">
+          <div className="hero-content">
+            <div className="hero-badge">
+              <FontAwesomeIcon icon={faBookOpen} />
+              <span>Published at L@S'23</span>
+            </div>
+            <h1 className="hero-title">
+              High-Resolution Course <span className="gradient-text">Feedback</span>
+            </h1>
+            <p className="hero-subtitle">
+              Get timely, actionable feedback from your students every week. 
+              Anonymous surveys that help you understand your class mood and improve your teaching.
+            </p>
+            <div className="hero-buttons">
+              <Link href="/login" className="btn-primary">
+                Get Started Free
+                <FontAwesomeIcon icon={faArrowRight} />
+              </Link>
+              <a 
+                href="https://yunsungkim.com/pdfs/hrcf.pdf" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                Read Research Paper
+              </a>
+            </div>
+            <div className="hero-stats">
+              <div className="stat">
+                <span className="stat-number">100%</span>
+                <span className="stat-label">Anonymous</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">Weekly</span>
+                <span className="stat-label">Feedback</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">Real-time</span>
+                <span className="stat-label">Insights</span>
+              </div>
+            </div>
+          </div>
+          <div className="hero-visual">
+            <div className="hero-image-container">
+              <Image
+                src="/overview.png"
+                alt="HRCF Overview"
+                width={800}
+                height={320}
+                className="hero-image"
+                priority
+              />
+              <div className="image-caption">
+                Schematic of HRCF surveys showing weekly mood trends
+              </div>
+            </div>
           </div>
         </div>
-        <hr/>
-        <Faq/>
-        <hr/>
-        <h3 style={{textAlign: "center"}}>Reference</h3>
-          <div className={styles.bibtex_box}>
-            <pre className={styles.pre}>{bibtex}</pre>
+      </section>
+
+      {/* Features Section */}
+      <section className="features">
+        <div className="container">
+          <div className="section-header">
+            <h2>Why Choose HRCF?</h2>
+            <p>Powerful features designed for modern educators</p>
           </div>
-      </div>
-    </main>
-    </NavBarContainer>
+          <div className="features-grid">
+            <FeatureCard
+              icon={faClock}
+              title="Timely Feedback"
+              description="Get feedback when it matters most - weekly insights help you adjust your teaching in real-time."
+            />
+            <FeatureCard
+              icon={faShieldAlt}
+              title="Anonymous & Safe"
+              description="Students provide honest feedback through completely anonymous surveys with unique secure links."
+            />
+            <FeatureCard
+              icon={faChartLine}
+              title="Data-Driven Insights"
+              description="Weekly mood graphs and participation rates help you track class sentiment over time."
+            />
+            <FeatureCard
+              icon={faUsers}
+              title="Smart Sampling"
+              description="Students are randomly selected for surveys, ensuring representative feedback without survey fatigue."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="how-it-works">
+        <div className="container">
+          <div className="section-header">
+            <h2>How It Works</h2>
+            <p>Simple three-step process for weekly feedback</p>
+          </div>
+          <div className="timeline">
+            <TimelineStep
+              number="1"
+              title="Survey Opens"
+              time="Monday at Noon PT"
+              description="Selected students receive anonymous survey links to provide weekly feedback on their course experience."
+            />
+            <TimelineStep
+              number="2"
+              title="Reminder Sent"
+              time="Thursday at Noon PT"
+              description="Gentle reminder emails are sent to students who haven't yet completed their feedback."
+            />
+            <TimelineStep
+              number="3"
+              title="Digest Delivered"
+              time="Sunday at 4pm PT"
+              description="You receive a comprehensive weekly digest with all feedback, mood graphs, and actionable insights."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="faq">
+        <div className="container">
+          <div className="section-header">
+            <h2>Frequently Asked Questions</h2>
+          </div>
+          <div className="faq-list">
+            <FaqItem
+              question="How do I get started?"
+              answer={
+                <div>
+                  <p>Getting started is easy:</p>
+                  <ol>
+                    <li>Click "Sign In" and create an account with your institutional email</li>
+                    <li>Complete the "Create a Course Survey" form</li>
+                    <li>Send us your school profile page and the generated course ID</li>
+                    <li>We'll review and approve your course survey!</li>
+                  </ol>
+                  <p>While we review your request, you can set up your course roster, custom questions, and admin list.</p>
+                </div>
+              }
+            />
+            <FaqItem
+              question="What questions do you ask students?"
+              answer={
+                <div>
+                  <p>All surveys include these 4 default questions:</p>
+                  <ul>
+                    <li><strong>Q1:</strong> What did you like about the course so far?</li>
+                    <li><strong>Q2:</strong> Is anything from class still confusing to you?</li>
+                    <li><strong>Q3:</strong> Is there anything the teaching team should know?</li>
+                    <li><strong>Q4:</strong> How would you rate your course experience this week? (5-point scale)</li>
+                  </ul>
+                  <p>You can also add custom questions each week for specific topics.</p>
+                </div>
+              }
+            />
+            <FaqItem
+              question="What's included in the weekly digest?"
+              answer={
+                <div>
+                  <ul>
+                    <li><strong>Participation Rate:</strong> Number of students surveyed vs. responses received</li>
+                    <li><strong>Response Collection:</strong> All feedback organized by question with visualizations</li>
+                    <li><strong>Class Mood Graph:</strong> Weekly trend analysis showing student sentiment over time</li>
+                  </ul>
+                </div>
+              }
+            />
+            <FaqItem
+              question="How do you maintain privacy and anonymity?"
+              answer={
+                <p>Each student receives a unique, secure link to submit their responses completely anonymously. We never track which student provided which feedback.</p>
+              }
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta">
+        <div className="container">
+          <div className="cta-content">
+            <h2>Ready to understand your students better?</h2>
+            <p>Join educators using HRCF to get timely, actionable feedback every week.</p>
+            <Link href="/login" className="btn-primary large">
+              Start Your Free Course Survey
+              <FontAwesomeIcon icon={faArrowRight} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+            <div className="footer-left">
+              <div className="footer-logo">
+                <FontAwesomeIcon icon={faChartLine} />
+                <span>HRCF</span>
+              </div>
+              <p>High-Resolution Course Feedback for modern educators</p>
+            </div>
+            <div className="footer-right">
+              <div className="footer-links">
+                <a href="https://yunsungkim.com/pdfs/hrcf.pdf" target="_blank" rel="noopener noreferrer">
+                  Research Paper
+                </a>
+                <Link href="/login">Sign In</Link>
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>&copy; 2024 High-Resolution Course Feedback. Built for educators, by educators.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   )
 }

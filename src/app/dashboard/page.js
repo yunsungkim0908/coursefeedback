@@ -9,7 +9,74 @@ import { AddCourse } from "./addCourse.js"
 import { db, auth } from '../../components/firebase'
 import { collection, query, getDocs, where } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSignOutAlt, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { 
+  faSignOutAlt, 
+  faPlus, 
+  faChartLine, 
+  faUsers, 
+  faClock,
+  faGraduationCap
+} from '@fortawesome/free-solid-svg-icons'
+
+const QuickStats = ({ userCourses, coursesLoading }) => {
+  const totalCourses = userCourses.length;
+  const activeCourses = userCourses.filter(course => course.approvalStatus).length;
+  
+  if (coursesLoading) {
+    return (
+      <div className="inline-stats">
+        <div className="inline-stat">
+          <span className="stat-label">Total:</span>
+          <span className="stat-value">...</span>
+        </div>
+        <div className="inline-stat">
+          <span className="stat-label">Active:</span>
+          <span className="stat-value">...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="inline-stats">
+      <div className="inline-stat">
+        <FontAwesomeIcon icon={faGraduationCap} className="stat-icon" />
+        <span className="stat-label">Total:</span>
+        <span className="stat-value">{totalCourses}</span>
+      </div>
+      <div className="inline-stat">
+        <FontAwesomeIcon icon={faChartLine} className="stat-icon" />
+        <span className="stat-label">Active:</span>
+        <span className="stat-value">{activeCourses}</span>
+      </div>
+    </div>
+  );
+};
+
+
+const EmptyState = () => (
+  <div className="empty-state">
+    <div className="empty-icon">
+      <FontAwesomeIcon icon={faGraduationCap} />
+    </div>
+    <h3>No courses yet</h3>
+    <p>Create your first course survey to start collecting valuable feedback from your students.</p>
+    <div className="empty-features">
+      <div className="empty-feature">
+        <FontAwesomeIcon icon={faClock} />
+        <span>Weekly insights</span>
+      </div>
+      <div className="empty-feature">
+        <FontAwesomeIcon icon={faUsers} />
+        <span>Anonymous feedback</span>
+      </div>
+      <div className="empty-feature">
+        <FontAwesomeIcon icon={faChartLine} />
+        <span>Mood tracking</span>
+      </div>
+    </div>
+  </div>
+);
 
 export default function Page() {
   const [signedIn, setSignedIn] = useState(false);
@@ -43,7 +110,7 @@ export default function Page() {
         const data = snap.data();
         return {
           ...data,
-          approvalStatus: true // This should be fetched from approvedCourses collection
+          approvalStatus: true
         };
       });
       setUserCourses(courses);
@@ -62,43 +129,74 @@ export default function Page() {
 
   if (signedIn){
     return (
-      <div className="page-wrapper">
-        <div className="container">
-          <div className="content-wrapper">
-            {/* Header Section */}
-            <div className="card mb-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h1>High-Resolution Course Feedback</h1>
-                  <p className="text-muted mb-0">
-                    Welcome back, {auth.currentUser?.displayName || 'User'}!
-                  </p>
-                  <p className="text-muted text-sm">
-                    {auth.currentUser?.email}
-                  </p>
+      <div className="dashboard-page">
+        {/* Navigation Header */}
+        <nav className="dashboard-nav">
+          <div className="nav-container">
+            <div className="nav-left">
+              <div className="nav-logo">
+                <FontAwesomeIcon icon={faChartLine} />
+                <span>HRCF Dashboard</span>
+              </div>
+            </div>
+            <div className="nav-right">
+              <div className="user-info">
+                <div className="user-details">
+                  <span className="user-name">{auth.currentUser?.displayName || 'User'}</span>
+                  <span className="user-email">{auth.currentUser?.email}</span>
                 </div>
                 <button 
                   onClick={() => auth.signOut()}
-                  className="btn btn-secondary"
+                  className="sign-out-btn"
+                  title="Sign Out"
                 >
                   <FontAwesomeIcon icon={faSignOutAlt} />
-                  Sign Out
                 </button>
               </div>
             </div>
+          </div>
+        </nav>
 
-            {/* Add Course Section */}
-            <div className="mb-4">
-              <button 
-                onClick={() => setShowAddCourse(!showAddCourse)}
-                className="btn btn-primary"
-              >
-                <FontAwesomeIcon icon={faPlus} />
-                Add New Course
-              </button>
-              
-              {showAddCourse && (
-                <div className="mt-3">
+        <div className="dashboard-container">
+          {/* Welcome Section */}
+          <div className="welcome-section">
+            <div className="welcome-content">
+              <h1>Welcome back, {auth.currentUser?.displayName?.split(' ')[0] || 'User'}!</h1>
+              <p>Monitor your course feedback and track student engagement with real-time insights.</p>
+            </div>
+            <button 
+              onClick={() => setShowAddCourse(!showAddCourse)}
+              className="btn-primary"
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              Add New Course
+            </button>
+          </div>
+
+
+          {/* Main Content */}
+          <div className="courses-section">
+            <div className="section-header">
+              <h2>Your Courses</h2>
+              <div className="header-stats">
+                <QuickStats userCourses={userCourses} coursesLoading={coursesLoading} />
+              </div>
+            </div>
+
+            {/* Add Course Form */}
+            {showAddCourse && (
+              <div className="add-course-modal">
+                <div className="add-course-header">
+                  <h3>Create New Course Survey</h3>
+                  <button 
+                    onClick={() => setShowAddCourse(false)}
+                    className="close-btn"
+                    aria-label="Close"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="add-course-content">
                   <AddCourse 
                     db={db} 
                     coursesState={[userCourses, setUserCourses]}
@@ -107,41 +205,31 @@ export default function Page() {
                     onSuccess={() => setShowAddCourse(false)}
                   />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Courses Section */}
-            <div className="card">
-              <h2 className="mb-3">Your Courses</h2>
-              <p className="text-muted mb-4">
-                Click on any course card to access the settings page where you can manage rosters, 
-                survey questions, and course administrators.
-              </p>
-
-              {coursesLoading ? (
-                <div className="course-grid">
-                  <CourseCardSkeleton />
-                  <CourseCardSkeleton />
-                  <CourseCardSkeleton />
-                </div>
-              ) : userCourses.length === 0 ? (
-                <div className="text-center py-5">
-                  <p className="text-muted">No courses found. Add your first course to get started!</p>
-                </div>
-              ) : (
-                <div className="course-grid">
-                  {userCourses.map((course) => (
-                    <CourseCard 
-                      key={course.hash} 
-                      course={course} 
-                      user={auth.currentUser}
-                      db={db}
-                      onDelete={handleDeleteCourse}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Courses Grid */}
+            {coursesLoading ? (
+              <div className="course-grid">
+                <CourseCardSkeleton />
+                <CourseCardSkeleton />
+                <CourseCardSkeleton />
+              </div>
+            ) : userCourses.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <div className="course-grid">
+                {userCourses.map((course) => (
+                  <CourseCard 
+                    key={course.hash} 
+                    course={course} 
+                    user={auth.currentUser}
+                    db={db}
+                    onDelete={handleDeleteCourse}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,18 +1,19 @@
 'use client';
 
-// TODO: last roster update
+// Import CSS first to prevent FOUC  
+import "../globals.css"
+import "../main.css"
 
-import { Button, ButtonGroup, Dropdown, Table } from "react-bootstrap";
-import Tab from "react-bootstrap/Tab"
-import Tabs from "react-bootstrap/Tabs"
+// Removed Bootstrap imports to prevent conflicts
 import React, { useState, useEffect } from 'react';
 import 'firebase/compat/auth';
-import "bootstrap/dist/css/bootstrap.min.css";
 import { CSVReader } from 'react-papaparse';
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { ErrorMessage, SuccessMessage, SectionCard } from '../../components/utils.js'
 import styles from '../page.module.css'
 import pageStyles from './page.module.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUsers, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 
 const getPstTimestamp = () => {
   // Create a Date object for the current date and time
@@ -151,7 +152,7 @@ const RosterForm = (props) => {
         </div>
 
         <div style={{'maxHeight': '300px', 'overflowY': 'scroll'}}>
-          <Table className={staged ? pageStyles.staged : pageStyles.unstaged}>
+          <table className={`roster-table ${staged ? 'staged' : 'unstaged'}`}>
             <thead>
               <tr>
                 <th> No. </th>
@@ -168,12 +169,12 @@ const RosterForm = (props) => {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         </div>
         <div className={styles['button-box']}>
-          <Button type="submit" onClick={onSubmit}>
+          <button className="btn-primary" type="submit" onClick={onSubmit}>
             Upload!
-          </Button>
+          </button>
           <p style={{color: 'red', margin: "5px", flex: 1}}>
             Please make sure to <b>review the staged roster</b> before uploading.
           </p>
@@ -185,28 +186,73 @@ const RosterForm = (props) => {
 
 export const ManageRoster = (props) => {
   return (
-    <SectionCard>
-      <h2>Update Roster</h2>
-      <hr/>
-      <p>Upload a CSV file that has the following 2 fields:</p>
-      <ul>
-        <li key={1}><b>Name</b>: Full name of the student (e.g., John Doe)</li>
-        <li key={2}><b>Email</b>: Email address of the student (e.g., student@example.edu)</li>
-      </ul>
+    <div className="settings-section-clean">
+      <div className="section-content">
+        <div className="section-header-clean">
+          <h2>
+            <FontAwesomeIcon icon={faUsers} className="section-icon" />
+            Update Roster
+          </h2>
+          <p className="section-description">
+            Upload your course roster to manage student survey assignments.
+          </p>
+        </div>
+        
+        <div className="roster-instructions">
+          <div className="instruction-panel">
+            <h4>CSV File Requirements</h4>
+            <p>Upload a CSV file that has the following 2 fields:</p>
+            <div className="requirement-list">
+              <div className="requirement-item">
+                <span className="requirement-label">Name</span>
+                <span className="requirement-desc">Full name of the student (e.g., John Doe)</span>
+              </div>
+              <div className="requirement-item">
+                <span className="requirement-label">Email</span>
+                <span className="requirement-desc">Email address of the student (e.g., student@example.edu)</span>
+              </div>
+            </div>
+          </div>
 
-      <u><b style={{'color': 'blue'}}>If your course uses Canvas,</b></u> follow these steps:
-      <ul>
-        <li key={1}>Open your course Canvas page. </li>
-        <li key={2}>Go to the <b>"New Analytics"</b> page by clicking on the "New Analytics" button.</li>
-        <li key={3}>Click on the <b>"Reports"</b> tab.</li>
-        <li key={4}>Click the <b>"Run Report"</b> button for "Class Roster".</li>
-        <li key={5}>Download the roster CSV file by clicking the "Run Report" button.</li>
-      </ul>
+          <div className="instruction-panel canvas">
+            <h4>
+              <FontAwesomeIcon icon={faFileAlt} className="panel-icon" />
+              If your course uses Canvas
+            </h4>
+            <div className="steps-list">
+              <div className="step">
+                <span className="step-number">1</span>
+                <span>Open your course Canvas page.</span>
+              </div>
+              <div className="step">
+                <span className="step-number">2</span>
+                <span>Go to the <b>"New Analytics"</b> page by clicking on the "New Analytics" button.</span>
+              </div>
+              <div className="step">
+                <span className="step-number">3</span>
+                <span>Click on the <b>"Reports"</b> tab.</span>
+              </div>
+              <div className="step">
+                <span className="step-number">4</span>
+                <span>Click the <b>"Run Report"</b> button for "Class Roster".</span>
+              </div>
+              <div className="step">
+                <span className="step-number">5</span>
+                <span>Download the roster CSV file by clicking the "Run Report" button.</span>
+              </div>
+            </div>
+            
+            <p className="help-text">
+              If you are still having trouble, refer to this <a href="https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-view-and-download-reports-in-New-Analytics/ta-p/409936" target="_blank" rel="noopener noreferrer">detailed guide</a> on the Canvas community website.
+            </p>
+          </div>
+        </div>
 
-      <p> If you are still having trouble, refer to this <a href="https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-view-and-download-reports-in-New-Analytics/ta-p/409936">detailed guide</a> on the Canvas community website.</p>
-
-      <RosterForm db={props.db} classHash={props.classHash}/>
-    </SectionCard>
+        <div className="roster-form-wrapper">
+          <RosterForm db={props.db} classHash={props.classHash}/>
+        </div>
+      </div>
+    </div>
   )
 }
 

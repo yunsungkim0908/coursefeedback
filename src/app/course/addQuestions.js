@@ -1,16 +1,15 @@
 import Link from 'next/link'
 import React, { useRef, useState, useEffect } from 'react';
-import { Table, Button ,Dropdown } from 'react-bootstrap'
+import "../globals.css"
+import "../main.css"
 import "../../components/Forms/Form.css"
 import { doc, deleteDoc, updateDoc, setDoc, getDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
 import TextareaAutosize from 'react-textarea-autosize';
 import autosize from 'autosize'
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt, faGripLinesVertical } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faGripLinesVertical, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { useField, Form, Formik, Field, FieldArray } from "formik";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
@@ -42,102 +41,89 @@ export const QuestionTypeDropdown = ({index, freezeQues}) => {
   const selection = (questionType == "")? 'Please Choose' : questionType
 
   return (
-    <>
-      <Dropdown>
-        <Dropdown.Toggle
-          variant="outline-primary" id="dropdown-basic"
-          style={{'width':'150px'}}
-        >
-          {quesTypeDisplay[selection]}
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          {
-            quesTypeChoices.map((choice, idx) => (
-              <Dropdown.Item 
-                key={idx}
-                onClick = {() => {
-                  helpers.setValue(choice)
-                }}
-                disabled={freezeQues} 
-              >{quesTypeDisplay[choice]}</Dropdown.Item>
-            ))
-          }
-        </Dropdown.Menu>
-      </Dropdown>
-      {meta.touched && meta.error && 
-      <div className="error-space">
-        <span className="error">{meta.error}</span>
-      </div>}
-    </>
+    <div className="type-dropdown-wrapper">
+      <select 
+        className="type-select"
+        value={questionType}
+        onChange={(e) => helpers.setValue(e.target.value)}
+        disabled={freezeQues}
+      >
+        <option value="">Please Choose</option>
+        {quesTypeChoices.map((choice, idx) => (
+          <option key={idx} value={choice}>
+            {quesTypeDisplay[choice]}
+          </option>
+        ))}
+      </select>
+      {meta.touched && meta.error && (
+        <span className="question-error">{meta.error}</span>
+      )}
+    </div>
   )
 }
 
 const FixedRow = (props) => {
   return (
-    <>
-      <Col sm="8">
-        <TextareaAutosize className="text-area-input" disabled={true}
+    <div className="question-row default">
+      <div className="question-prompt">
+        <textarea 
+          className="question-textarea disabled" 
+          disabled={true}
           value={props.prompt}
+          readOnly
         />
-      </Col>
-      <Col sm="3" className='vertical-center'>
-        <Dropdown>
-          <Dropdown.Toggle
-            variant="outline-secondary" id="dropdown-basic" disabled
-            style={{'width': '150px'}}
-          >
-            {quesTypeDisplay[props.type]}
-          </Dropdown.Toggle>
-        </Dropdown>
-      </Col>
-      <Col sm="1">
-        {/*<Button disabled>
-          Default
-        </Button>*/}
-      </Col>
-      <hr style={{margin: "0.3rem 0 0.3rem 0"}}/>
-    </>
+      </div>
+      <div className="question-type">
+        <span className="type-display disabled">
+          {quesTypeDisplay[props.type]}
+        </span>
+      </div>
+      <div className="question-actions">
+        <span className="default-label">Default</span>
+      </div>
+    </div>
   )
 }
 
-// Table row for custom questions customized by teachers.
+// Custom questions row for teachers to edit
 export const EditableRow = ({index, formikProps}) => {
   const [promptField, promptMeta]= useField(`questions.${index}.prompt`)
 
   const handleDeleteQuestion = (formikProps, index) => {
     const { questions } = formikProps.values
     questions.splice(index, 1);
-
     formikProps.setFieldValue("questions", questions);
   }
 
   return (
-    <>
-      <Col sm="8">
-        <div className='button-box'>
-          <div className='flex-grow'>
-            <TextareaAutosize className="text-area-input" disabled={false}
-              {...promptField}/>
-            {promptMeta.touched && promptMeta.error &&
-            <p>
-              <span className="error">{promptMeta.error}</span>
-            </p>}
-          </div>
+    <div className="question-row editable">
+      <div className="question-prompt">
+        <textarea 
+          className="question-textarea" 
+          {...promptField}
+          placeholder="Enter your custom question..."
+        />
+        {promptMeta.touched && promptMeta.error && (
+          <span className="question-error">{promptMeta.error}</span>
+        )}
+      </div>
+      <div className="question-type">
+        <QuestionTypeDropdown index={index} freezeQues={false}/>
+      </div>
+      <div className="question-actions">
+        <button 
+          className="btn-icon danger" 
+          type="button"
+          onClick={() => {handleDeleteQuestion(formikProps, index)}}
+          title="Delete question"
+        >
+          <FontAwesomeIcon icon={faTrashAlt} />
+        </button>
+        <div className="drag-handle" title="Drag to reorder">
+          <FontAwesomeIcon icon={faGripLinesVertical} />
         </div>
-      </Col>
-      <Col sm="4" className='vertical-center'>
-        <div className='button-box'>
-          <QuestionTypeDropdown className='flex-item' index={index} freezeQues={false}/>
-          <Button className='flex-item' variant="danger" type="button" disabled={false}
-            onClick={() => {handleDeleteQuestion(formikProps, index)}}
-          >
-            <FontAwesomeIcon icon={faTrashAlt} size="sm"/>
-          </Button>
-        </div>
-      </Col>
-      <hr style={{margin: "0.3rem 0 0.3rem 0"}}/>
-    </>
+      </div>
+    </div>
   )
 }
 
@@ -280,17 +266,14 @@ export const QuestionsTable = (props) => {
             >
               <FieldArray name="questions">
                 <>
-                  <div style={{margin: "1rem"}}>
-                    <Row>
-                      <Col sm="8"><b>Question Prompt</b></Col>
-                      <Col sm="3"><b>Question type</b></Col>
-                      <Col sm="1"></Col>
-                      <hr style={{margin: "1rem 0 0.5rem 0"}}/>
-                    </Row>
-                    {defaultQues.map((question) => (
-                      <Row>
-                        <FixedRow {...question}/>
-                      </Row>
+                  <div className="questions-list">
+                    <div className="questions-header">
+                      <div className="header-prompt">Question Prompt</div>
+                      <div className="header-type">Question Type</div>
+                      <div className="header-actions"></div>
+                    </div>
+                    {defaultQues.map((question, idx) => (
+                      <FixedRow key={`default-${idx}`} {...question}/>
                     ))}
                     {formikProps.values.questions.map((question,index) => (
                       <Draggable
@@ -299,40 +282,49 @@ export const QuestionsTable = (props) => {
                         index={index}
                       >
                         {(provided) => (
-                        <Row
+                        <div
                           key={index}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          className="draggable-wrapper"
                         >
                           <EditableRow index={index} formikProps={formikProps}/>
-                        </Row>
+                        </div>
                         )}
                       </Draggable>
                     ))}
                   </div>
                   {provided.placeholder}
-                  <p style={{color: 'blue'}}>
-                    Note: Changes made now will be reflected in the upcoming survey.
-                  </p>
-                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <Button href={`survey?callNumber=${props.classCode}&classHash=${props.classHash}&user=preview&week=`}>
-                      See Survey Preview
-                    </Button>
-                    <div className='button-box'>
-                      <Button
-                        type="button"
-                        className='mx-auto'
-                        onClick={()=>{handleAddQuestion(formikProps)}}
+                  
+                  <div className="questions-footer">
+                    <div className="footer-note">
+                      <FontAwesomeIcon icon={faQuestionCircle} className="note-icon" />
+                      <span>Note: Changes made now will be reflected in the upcoming survey.</span>
+                    </div>
+                    
+                    <div className="footer-actions">
+                      <a 
+                        href={`survey?callNumber=${props.classCode}&classHash=${props.classHash}&user=preview&week=`}
+                        className="btn-secondary"
                       >
-                        Add Question
-                      </Button>
-                      <Button 
-                        type="submit" 
-                        className="mx-auto"
-                      >
-                        Save
-                      </Button>
+                        See Survey Preview
+                      </a>
+                      <div className="action-buttons">
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          onClick={()=>{handleAddQuestion(formikProps)}}
+                        >
+                          Add Question
+                        </button>
+                        <button 
+                          type="submit" 
+                          className="btn-primary"
+                        >
+                          Save Changes
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -349,32 +341,57 @@ export const QuestionsTable = (props) => {
 
 export const AddQuestions = (props) => {
   return (
-    <>
-      <div className="card my-4 mx-auto" style={{maxWidth: 800}}>
-        <div className="card-body">
-          <div className="question-spacing">
-            <div className="question-spacing">
-              <h2>Feedback Questions</h2>
-              <hr/>
-              <div>
-                  <p>You can ask more questions to your students in addition to our default questions. Modify your question prompts through this form and <b> click "Save" to save <span style={{color: 'blue'}}> any </span> changes that you made</b>. <u>(Unless specifically deleted, the same questions from the previous week will be used.)</u></p>
-                Choose one the following types for each question (Drag and drop a row to change the order):
-                <ul>
-                  <li><b>Text:</b> Students will give responses in text.</li>
-                  <li><b>Numeric:</b> Students will give numeric responses.</li>
-                  <li><b>Rating (1-5):</b> Students will choose an integer rating from 1 to 5.</li>
-                  <li><b>Rating (Qualitative):</b> Students will choose from (Poor, Below Average, Ok, Good, Excellent).</li>
-                </ul>
-                <p>
-                  You may drag and drop custom questions to change order.
-                </p>
-                <QuestionsTable {...props}/>
+    <div className="settings-section-clean">
+      <div className="section-content">
+        <div className="section-header-clean">
+          <h2>
+            <FontAwesomeIcon icon={faQuestionCircle} className="section-icon" />
+            Feedback Questions
+          </h2>
+          <p className="section-description">
+            Customize your weekly surveys with additional questions beyond our defaults.
+          </p>
+        </div>
+        
+        <div className="questions-instructions">
+          <div className="instruction-card">
+            <h4>How to customize questions</h4>
+            <p>You can ask more questions to your students in addition to our default questions. Modify your question prompts through this form and <b> click "Save" to save <span className="highlight-text"> any </span> changes that you made</b>. <u>(Unless specifically deleted, the same questions from the previous week will be used.)</u></p>
+            
+            <div className="question-types">
+              <h5>Available question types:</h5>
+              <div className="type-list">
+                <div className="type-item">
+                  <span className="type-badge text">Text</span>
+                  <span>Students will give responses in text.</span>
+                </div>
+                <div className="type-item">
+                  <span className="type-badge numeric">Numeric</span>
+                  <span>Students will give numeric responses.</span>
+                </div>
+                <div className="type-item">
+                  <span className="type-badge rating">Rating (1-5)</span>
+                  <span>Students will choose an integer rating from 1 to 5.</span>
+                </div>
+                <div className="type-item">
+                  <span className="type-badge qualitative">Rating (Qualitative)</span>
+                  <span>Students will choose from (Poor, Below Average, Ok, Good, Excellent).</span>
+                </div>
               </div>
             </div>
+            
+            <p className="drag-hint">
+              <FontAwesomeIcon icon={faGripLinesVertical} className="drag-icon" />
+              You may drag and drop custom questions to change order.
+            </p>
           </div>
         </div>
+        
+        <div className="questions-table-wrapper">
+          <QuestionsTable {...props}/>
+        </div>
       </div>
-    </>
+    </div>
   )
 };
 
