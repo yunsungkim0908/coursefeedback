@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { auth } from './firebase';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Icon from './Icon';
 import { faChartLine, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const NavBar = ({ breadcrumbs = [] }) => {
@@ -12,7 +12,7 @@ const NavBar = ({ breadcrumbs = [] }) => {
       <div className="nav-container">
         <div className="nav-left">
           <Link href="/dashboard" className="nav-logo">
-            <FontAwesomeIcon icon={faChartLine} />
+            <Icon icon={faChartLine} />
             <span>HRCF</span>
           </Link>
           {breadcrumbs.length > 0 && (
@@ -43,7 +43,7 @@ const NavBar = ({ breadcrumbs = [] }) => {
               className="sign-out-btn"
               title="Sign Out"
             >
-              <FontAwesomeIcon icon={faSignOutAlt} />
+              <Icon icon={faSignOutAlt} />
             </button>
           </div>
         </div>

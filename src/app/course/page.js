@@ -99,16 +99,6 @@ export default function Page () {
   
   const router = useRouter();
 
-  // Prevent FOUC by ensuring styles are loaded synchronously
-  if (typeof window !== 'undefined') {
-    document.documentElement.style.setProperty('--background', '#f5f5f5');
-    document.documentElement.style.setProperty('--foreground', '#1a1a1a');
-    document.documentElement.style.setProperty('--card', '#ffffff');
-    document.documentElement.style.setProperty('--border', '#e5e7eb');
-    document.documentElement.style.setProperty('--primary', '#3b82f6');
-    document.documentElement.style.setProperty('--primary-hover', '#2563eb');
-    document.documentElement.style.setProperty('--muted', '#6b7280');
-  }
 
   useEffect(() => {
     const unregisterAuthObserver = auth.onAuthStateChanged(user => {

@@ -788,6 +788,13 @@ code {
   height: 80px;
 }
 
+/* Prevent FontAwesome FOUC by reserving space */
+.fa, .fas, .far, .fal, .fab, svg[data-icon] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
 .nav-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -898,7 +905,7 @@ code {
   margin: 0 auto;
   padding: 2rem;
   margin-top: 80px; /* Account for fixed navbar */
-  height: calc(100vh - 80px);
+  flex: 1;
   overflow-y: auto;
 }
 
