@@ -144,41 +144,43 @@ const RosterForm = (props) => {
         <span>Drop CSV file here or click to upload.</span>
       </CSVReader>
 
-      <div style={{'textAlign': 'center', 'color': (staged ? 'blue' : 'black')}}>
+      <div className={`roster-status ${staged ? 'staged' : 'unstaged'}`}>
         {countText}
+        {lastUpdateText && (
+          <div className="roster-last-update">
+            {lastUpdateText}
+          </div>
+        )}
+      </div>
 
-        <div style={{'color': 'black'}}>
-          {lastUpdateText}
-        </div>
-
-        <div style={{'maxHeight': '300px', 'overflowY': 'scroll'}}>
-          <table className={`roster-table ${staged ? 'staged' : 'unstaged'}`}>
-            <thead>
-              <tr>
-                <th> No. </th>
-                <th> Name </th>
-                <th> Email </th>
+      <div className="roster-container">
+        <table className={`roster-table ${staged ? 'staged' : 'unstaged'}`}>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(staged ? roster : oldRoster).map((_, i) => (
+              <tr key={i}>
+                <td>{i+1}</td>
+                <td>{(staged ? roster : oldRoster)[i].name}</td>
+                <td>{(staged ? roster : oldRoster)[i].email}</td>
               </tr>
-            </thead>
-            <tbody style={{'color': (staged?'blue':'black')}}>
-              {(staged ? roster : oldRoster).map((_, i) => (
-                <tr key={i}>
-                  <td> {i+1} </td>
-                  <td> {(staged ? roster : oldRoster)[i].name} </td>
-                  <td> {(staged ? roster : oldRoster)[i].email} </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className={styles['button-box']}>
-          <button className="btn-primary" type="submit" onClick={onSubmit}>
-            Upload!
-          </button>
-          <p style={{color: 'red', margin: "5px", flex: 1}}>
-            Please make sure to <b>review the staged roster</b> before uploading.
-          </p>
-        </div>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      
+      <div className={styles['button-box']}>
+        <button className="btn-primary" type="submit" onClick={onSubmit}>
+          Upload!
+        </button>
+        <p style={{color: 'red', margin: "5px", flex: 1}}>
+          Please make sure to <b>review the staged roster</b> before uploading.
+        </p>
       </div>
     </div>
   )

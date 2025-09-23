@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import TextareaAutosize from 'react-textarea-autosize';
 import autosize from 'autosize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt, faGripLinesVertical, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faGripLinesVertical, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { useField, Form, Formik, Field, FieldArray } from "formik";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
@@ -86,7 +86,7 @@ const FixedRow = (props) => {
 }
 
 // Custom questions row for teachers to edit
-export const EditableRow = ({index, formikProps}) => {
+export const EditableRow = ({index, formikProps, dragHandleProps, isDragging}) => {
   const [promptField, promptMeta]= useField(`questions.${index}.prompt`)
 
   const handleDeleteQuestion = (formikProps, index) => {
@@ -96,7 +96,7 @@ export const EditableRow = ({index, formikProps}) => {
   }
 
   return (
-    <div className="question-row editable">
+    <div className={`question-row editable ${isDragging ? 'dragging' : ''}`}>
       <div className="question-prompt">
         <textarea 
           className="question-textarea" 
@@ -119,7 +119,7 @@ export const EditableRow = ({index, formikProps}) => {
         >
           <FontAwesomeIcon icon={faTrashAlt} />
         </button>
-        <div className="drag-handle" title="Drag to reorder">
+        <div className="drag-handle" title="Drag to reorder" {...dragHandleProps}>
           <FontAwesomeIcon icon={faGripLinesVertical} />
         </div>
       </div>
@@ -281,15 +281,19 @@ export const QuestionsTable = (props) => {
                         draggableId={question.id}
                         index={index}
                       >
-                        {(provided) => (
+                        {(provided, snapshot) => (
                         <div
                           key={index}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          {...provided.dragHandleProps}
                           className="draggable-wrapper"
                         >
-                          <EditableRow index={index} formikProps={formikProps}/>
+                          <EditableRow 
+                            index={index} 
+                            formikProps={formikProps}
+                            dragHandleProps={provided.dragHandleProps}
+                            isDragging={snapshot.isDragging}
+                          />
                         </div>
                         )}
                       </Draggable>
@@ -310,6 +314,14 @@ export const QuestionsTable = (props) => {
                       >
                         See Survey Preview
                       </a>
+                      
+                      {formikProps.dirty && (
+                        <div className="unsaved-changes-indicator">
+                          <FontAwesomeIcon icon={faExclamationTriangle} className="icon" />
+                          <span>You have unsaved changes</span>
+                        </div>
+                      )}
+                      
                       <div className="action-buttons">
                         <button
                           type="button"
@@ -318,12 +330,14 @@ export const QuestionsTable = (props) => {
                         >
                           Add Question
                         </button>
-                        <button 
-                          type="submit" 
-                          className="btn-primary"
-                        >
-                          Save Changes
-                        </button>
+                        <div className={`save-button-with-indicator ${formikProps.dirty ? 'has-changes' : ''}`}>
+                          <button 
+                            type="submit" 
+                            className="btn-primary"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
