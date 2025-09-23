@@ -66,11 +66,12 @@ const FixedRow = (props) => {
   return (
     <div className="question-row default">
       <div className="question-prompt">
-        <textarea 
+        <TextareaAutosize 
           className="question-textarea disabled" 
           disabled={true}
           value={props.prompt}
           readOnly
+          minRows={1}
         />
       </div>
       <div className="question-type">
@@ -93,15 +94,18 @@ export const EditableRow = ({index, formikProps, dragHandleProps, isDragging}) =
     const { questions } = formikProps.values
     questions.splice(index, 1);
     formikProps.setFieldValue("questions", questions);
+    // Mark form as touched to trigger unsaved changes indicator
+    formikProps.setFieldTouched("questions", true);
   }
 
   return (
     <div className={`question-row editable ${isDragging ? 'dragging' : ''}`}>
       <div className="question-prompt">
-        <textarea 
+        <TextareaAutosize 
           className="question-textarea" 
           {...promptField}
           placeholder="Enter your custom question..."
+          minRows={1}
         />
         {promptMeta.touched && promptMeta.error && (
           <span className="question-error">{promptMeta.error}</span>
@@ -120,7 +124,6 @@ export const EditableRow = ({index, formikProps, dragHandleProps, isDragging}) =
           <FontAwesomeIcon icon={faTrashAlt} />
         </button>
         <div className="drag-handle" title="Drag to reorder" {...dragHandleProps}>
-          <FontAwesomeIcon icon={faGripLinesVertical} />
         </div>
       </div>
     </div>
@@ -133,6 +136,7 @@ export const QuestionsTable = (props) => {
   const [defaultQues, setDefaultQues] = useState([])
   const [customQues, setCustomQues] = useState({'questions': [], 'previous-questions': []})
   const [questionCounter, setQuestionCounter] = useState(1);
+  const [hasReordered, setHasReordered] = useState(false);
 
   const [prevCustomQues, setPrevCustomQues] = useState([])
   const [freezeQues, setFreezeQues] = useState(false)
@@ -202,7 +206,8 @@ export const QuestionsTable = (props) => {
             icon: "success",
             title: "Submitted!",
           })
-          // TODO: Add a "changes no saved" message
+          // Reset the reordered flag after successful save
+          setHasReordered(false);
         })
         .catch(() => {
           Swal.fire({
@@ -236,6 +241,8 @@ export const QuestionsTable = (props) => {
     questions.splice(result.destination.index, 0, reorderedItem);
 
     formikProps.setFieldValue("questions", questions);
+    // Mark as reordered to trigger unsaved changes indicator
+    setHasReordered(true);
   }
 
   const handleAddQuestion = (formikProps) => {
@@ -243,6 +250,8 @@ export const QuestionsTable = (props) => {
     const newQuestion = { id: getQuestionId(), prompt: '', type: '' };
 
     formikProps.setFieldValue('questions', [...questions, newQuestion]);
+    // Mark form as touched to trigger unsaved changes indicator
+    formikProps.setFieldTouched("questions", true);
   }
 
   return (
@@ -315,7 +324,7 @@ export const QuestionsTable = (props) => {
                         See Survey Preview
                       </a>
                       
-                      {formikProps.dirty && (
+                      {(formikProps.dirty || hasReordered) && (
                         <div className="unsaved-changes-indicator">
                           <FontAwesomeIcon icon={faExclamationTriangle} className="icon" />
                           <span>You have unsaved changes</span>
@@ -330,7 +339,7 @@ export const QuestionsTable = (props) => {
                         >
                           Add Question
                         </button>
-                        <div className={`save-button-with-indicator ${formikProps.dirty ? 'has-changes' : ''}`}>
+                        <div className={`save-button-with-indicator ${(formikProps.dirty || hasReordered) ? 'has-changes' : ''}`}>
                           <button 
                             type="submit" 
                             className="btn-primary"

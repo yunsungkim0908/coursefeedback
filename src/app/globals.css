@@ -98,7 +98,7 @@ a:hover {
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   border-radius: 0.5rem;
   border: none;
@@ -146,7 +146,7 @@ input, textarea, select {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   color: var(--foreground);
-  font-size: 0.875rem;
+  font-size: 1rem;
   transition: all 0.2s ease;
 }
 
@@ -319,7 +319,7 @@ input:focus, textarea:focus, select:focus {
 
 .course-card-subtitle {
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -334,7 +334,7 @@ input:focus, textarea:focus, select:focus {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .status-badge {
