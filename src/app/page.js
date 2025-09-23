@@ -68,10 +68,10 @@ export default function Home() {
           <div className="hero-content">
             <div className="hero-badge">
               <FontAwesomeIcon icon={faBookOpen} />
-              <span>Published at L@S'23</span>
+              <span>Published at ACM Learning@Scale'23</span>
             </div>
             <h1 className="hero-title">
-              High-Resolution Course <span className="gradient-text">Feedback</span>
+              High-Resolution Course Feedback
             </h1>
             <p className="hero-subtitle">
               Get timely, actionable feedback from your students every week. 
@@ -90,20 +90,6 @@ export default function Home() {
               >
                 Read Research Paper
               </a>
-            </div>
-            <div className="hero-stats">
-              <div className="stat">
-                <span className="stat-number">100%</span>
-                <span className="stat-label">Anonymous</span>
-              </div>
-              <div className="stat">
-                <span className="stat-number">Weekly</span>
-                <span className="stat-label">Feedback</span>
-              </div>
-              <div className="stat">
-                <span className="stat-number">Real-time</span>
-                <span className="stat-label">Insights</span>
-              </div>
             </div>
           </div>
           <div className="hero-visual">

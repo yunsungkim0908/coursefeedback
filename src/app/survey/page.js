@@ -75,7 +75,7 @@ export const QuestionBox = ({question, index}) => {
   }
 }
 
-export default function SurveyPage () {
+function SurveyContent() {
   const [questions, setQuestions] = useState({'questions': [], 'classWeek': null})
   const [invalidURL, setInvalidURL] = useState(false)
   const [isPreview, setIsPreview] = useState(false)
@@ -311,7 +311,15 @@ export default function SurveyPage () {
       </div>
     </div>
   );
-};
+}
+
+export default function SurveyPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <SurveyContent />
+    </Suspense>
+  );
+}
 
 const ButtonInput = ({question, index}) => {
   const [field, meta, helpers] = useField(`answers.${question.qid}`)

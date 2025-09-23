@@ -139,21 +139,23 @@ export default function Page() {
               <h1>Welcome back, {auth.currentUser?.displayName?.split(' ')[0] || 'User'}!</h1>
               <p>Monitor your course feedback and track student engagement with real-time insights.</p>
             </div>
-            <button 
-              onClick={() => setShowAddCourse(!showAddCourse)}
-              className="btn-primary"
-            >
-              <FontAwesomeIcon icon={faPlus} />
-              Add New Course
-            </button>
           </div>
 
 
           {/* Main Content */}
           <div className="courses-section">
             <div className="section-header">
-              <h2>Your Courses</h2>
-              <div className="header-stats">
+              <div className="header-title-row">
+                <div className="header-left">
+                  <h2>Your Courses</h2>
+                  <button 
+                    onClick={() => setShowAddCourse(!showAddCourse)}
+                    className="btn-primary"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                    Add New Course
+                  </button>
+                </div>
                 <QuickStats userCourses={userCourses} coursesLoading={coursesLoading} />
               </div>
             </div>
