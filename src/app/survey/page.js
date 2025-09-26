@@ -129,15 +129,22 @@ function SurveyContent() {
       setIsPreview(true)
       const auth = getAuth()
       onAuthStateChanged(auth, (user) => {
-        const defaultQuesRef = doc(db, 'shared', 'defaultQuestions')
-        const customQuesRef = doc(db, 'questions', classHash)
-        Promise.all([
-          readDocAndDo(defaultQuesRef, (snap) => snap.data().questions),
-          readDocAndDo(customQuesRef, (snap) => snap.data().questions)
-        ]).then((values) => {
-          const qlist = values[0].concat(values[1])
-          setQuestions({'questions': qlist})
-        })
+        if (user) {
+          const defaultQuesRef = doc(db, 'shared', 'defaultQuestions')
+          const customQuesRef = doc(db, 'questions', classHash)
+          Promise.all([
+            readDocAndDo(defaultQuesRef, (snap) => snap.data().questions),
+            readDocAndDo(customQuesRef, (snap) => snap.data().questions)
+          ]).then((values) => {
+            // Check if both values exist before concatenating
+            const defaultQuestions = values[0] || []
+            const customQuestions = values[1] || []
+            const qlist = defaultQuestions.concat(customQuestions)
+            setQuestions({'questions': qlist})
+          }).catch((error) => {
+            console.error('Error loading questions:', error)
+          })
+        }
       })
     } else {
       if (!globalWeek)
@@ -263,7 +270,7 @@ function SurveyContent() {
                 <Link
                   href={{
                     pathname: "/course",
-                    search: `?callNumber=${callNumber}&classHash=${classHash}&user=preview&section=questions`
+                    search: `?callNumber=${callNumber}&classHash=${classHash}&section=questions`
                   }}
                   className="back-to-settings"
                 >
