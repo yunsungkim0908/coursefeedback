@@ -263,7 +263,7 @@ function SurveyContent() {
                 <Link
                   href={{
                     pathname: "/course",
-                    search: `?callNumber=${callNumber}&classHash=${classHash}&user=preview`
+                    search: `?callNumber=${callNumber}&classHash=${classHash}&user=preview&section=questions`
                   }}
                   className="back-to-settings"
                 >

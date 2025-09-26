@@ -89,13 +89,16 @@ const TimelineSection = () => (
 
 export default function Page () {
   const [signedIn, setSignedIn] = useState(false);
-  const [activeSection, setActiveSection] = useState('timeline');
   const [courseData, setCourseData] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const search = useSearchParams();
   const className = search.get("callNumber");
   const instructorHash = search.get("classHash");
+  const sectionParam = search.get("section");
+  
+  // Set active section based on URL parameter, defaulting to 'timeline'
+  const [activeSection, setActiveSection] = useState(sectionParam || 'timeline');
   
   const router = useRouter();
 
@@ -116,6 +119,12 @@ export default function Page () {
     }
   }, [instructorHash]);
 
+  // Sync activeSection when URL parameter changes
+  useEffect(() => {
+    const newSection = sectionParam || 'timeline';
+    setActiveSection(newSection);
+  }, [sectionParam]);
+
   const loadCourseData = async () => {
     try {
       const courseRef = doc(db, 'courses', instructorHash);
@@ -126,6 +135,22 @@ export default function Page () {
     } catch (error) {
       console.error("Error loading course data:", error);
     }
+  };
+
+  // Navigate to a section and update URL
+  const navigateToSection = (sectionId) => {
+    const currentParams = new URLSearchParams(search.toString());
+    
+    if (sectionId === 'timeline') {
+      // Remove section parameter for default timeline section
+      currentParams.delete('section');
+    } else {
+      currentParams.set('section', sectionId);
+    }
+    
+    const newUrl = `/course?${currentParams.toString()}`;
+    router.push(newUrl);
+    setSidebarOpen(false);
   };
 
   const renderSection = () => {
@@ -214,10 +239,7 @@ export default function Page () {
             <button
               key={section.id}
               className={`sidebar-nav-item ${activeSection === section.id ? 'active' : ''}`}
-              onClick={() => {
-                setActiveSection(section.id);
-                setSidebarOpen(false);
-              }}
+              onClick={() => navigateToSection(section.id)}
             >
               <FontAwesomeIcon icon={section.icon} className="nav-icon" />
               <span>{section.label}</span>
