@@ -68,14 +68,14 @@ export default function Home() {
           <div className="hero-content">
             <div className="hero-badge">
               <FontAwesomeIcon icon={faBookOpen} />
-              <span>Published at ACM Learning@Scale'23</span>
+              <span>Published at ACM Learning@Scale</span>
             </div>
             <h1 className="hero-title">
               High-Resolution Course Feedback
             </h1>
             <p className="hero-subtitle">
-              Get timely, actionable feedback from your students every week. 
-              Anonymous surveys that help you understand your class mood and improve your teaching.
+              Get timely, actionable feedback from a small sample of your students every week. 
+              Anonymous surveys that help you understand your class mood and adjust your teaching.
             </p>
             <div className="hero-buttons">
               <Link href="/login" className="btn-primary">
@@ -102,9 +102,9 @@ export default function Home() {
                 className="hero-image"
                 priority
               />
-              <div className="image-caption">
+              {/* <div className="image-caption">
                 Schematic of HRCF surveys showing weekly mood trends
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -114,10 +114,15 @@ export default function Home() {
       <section className="features">
         <div className="container">
           <div className="section-header">
-            <h2>Why Choose HRCF?</h2>
-            <p>Powerful features designed for modern educators</p>
+            <h2>Why Use HRCF?</h2>
+            {/* <p>Powerful features designed for modern educators</p> */}
           </div>
           <div className="features-grid">
+            <FeatureCard
+              icon={faUsers}
+              title="Smart Sampling"
+              description="Students are randomly selected for surveys each week, enabling representative feedback without survey fatigue."
+            />
             <FeatureCard
               icon={faClock}
               title="Timely Feedback"
@@ -126,17 +131,12 @@ export default function Home() {
             <FeatureCard
               icon={faShieldAlt}
               title="Anonymous & Safe"
-              description="Students provide honest feedback through completely anonymous surveys with unique secure links."
+              description="Students provide honest feedback through anonymous surveys."
             />
             <FeatureCard
               icon={faChartLine}
               title="Data-Driven Insights"
               description="Weekly mood graphs and participation rates help you track class sentiment over time."
-            />
-            <FeatureCard
-              icon={faUsers}
-              title="Smart Sampling"
-              description="Students are randomly selected for surveys, ensuring representative feedback without survey fatigue."
             />
           </div>
         </div>
@@ -146,8 +146,8 @@ export default function Home() {
       <section className="how-it-works">
         <div className="container">
           <div className="section-header">
-            <h2>How It Works</h2>
-            <p>Simple three-step process for weekly feedback</p>
+            <h2>Weekly Survey Timeline</h2>
+            {/* <p>Simple three-step process for weekly feedback</p> */}
           </div>
           <div className="timeline">
             <TimelineStep
@@ -236,7 +236,7 @@ export default function Home() {
         <div className="container">
           <div className="cta-content">
             <h2>Ready to understand your students better?</h2>
-            <p>Join educators using HRCF to get timely, actionable feedback every week.</p>
+            <p>Sign up to get timely, actionable feedback every week.</p>
             <Link href="/login" className="btn-primary large">
               Start Your Free Course Survey
               <FontAwesomeIcon icon={faArrowRight} />
@@ -254,7 +254,7 @@ export default function Home() {
                 <FontAwesomeIcon icon={faChartLine} />
                 <span>HRCF</span>
               </div>
-              <p>High-Resolution Course Feedback for modern educators</p>
+              {/* <p>High-Resolution Course Feedback for modern educators</p> */}
             </div>
             <div className="footer-right">
               <div className="footer-links">

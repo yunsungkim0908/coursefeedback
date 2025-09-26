@@ -360,7 +360,7 @@ code {
 }
 
 .hero-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 0 2rem;
   display: grid;
@@ -481,11 +481,12 @@ code {
 }
 
 .hero-image-container {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .hero-image {
@@ -594,7 +595,7 @@ code {
   content: '';
   position: absolute;
   left: 1.5rem;
-  top: 4rem;
+  top: 3rem;
   bottom: -3rem;
   width: 2px;
   background: var(--border);
@@ -2642,6 +2643,231 @@ a.btn-secondary:hover {
 
 .text-sm {
   font-size: 1rem;
+}
+
+/* Login Page Styles */
+.login-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  background: var(--background);
+  padding: 2rem 0;
+}
+
+.login-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* Login Left Side */
+.login-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.back-link:hover {
+  gap: 0.75rem;
+}
+
+.login-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.login-hero p {
+  font-size: 1.25rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.login-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.login-logo svg {
+  font-size: 2.5rem;
+  color: var(--primary);
+}
+
+.login-logo span {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.login-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.login-feature .feature-icon {
+  font-size: 1.25rem;
+  color: var(--primary);
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-top: 0.25rem;
+}
+
+.login-feature h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--foreground);
+}
+
+.login-feature p {
+  font-size: 1rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Login Right Side */
+.login-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 550px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.login-header p {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.auth-container {
+  margin: 2rem 0;
+}
+
+/* FirebaseUI Custom Styling */
+.firebaseui-container {
+  font-family: inherit !important;
+}
+
+.firebaseui-idp-button {
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  padding: 0.75rem !important;
+  transition: all 0.2s ease !important;
+  font-family: inherit !important;
+}
+
+.firebaseui-idp-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.login-footer {
+  margin-top: 2rem;
+}
+
+.divider {
+  text-align: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider span {
+  background: var(--card);
+  padding: 0 1rem;
+  position: relative;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.signup-text {
+  text-align: center;
+  color: var(--muted);
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Login */
+@media (max-width: 768px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .login-left {
+    display: none;
+  }
+  
+  .login-card {
+    padding: 2rem;
+    max-width: 100%;
+  }
+  
+  .login-hero h1 {
+    font-size: 2rem;
+  }
+  
+  .login-page {
+    padding: 1rem 0;
+    align-items: flex-start;
+    padding-top: 4rem;
+  }
 }
 
 /* Loading spinner animation */

@@ -4,13 +4,15 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { auth } from '../../components/firebase'
 import React, {useEffect} from 'react'
-import styles from '../page.module.css'
+import '../globals.css'
 import '../main.css'
 import '../../components/Loading/loading.css'
 import 'firebaseui/dist/firebaseui.css'
 import firebase from 'firebase/compat/app'
 import 'firebase/auth'
-import { NavBarContainer } from '../../components/container.js'
+import NavBar from '../../components/NavBar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft, faChartLine, faShieldAlt, faUsers, faBookOpen } from '@fortawesome/free-solid-svg-icons'
 
 export default function Page() {
   const router = useRouter()
@@ -55,29 +57,29 @@ export default function Page() {
   }, [])
 
   return (
-    <NavBarContainer>
-      <main className={styles.main}>
-        <div className={styles.card}>
-          <div className={styles.cardCenter}>
-            <h2 className={styles.center}>High-Resolution Course Feedback</h2>
-            <h4 style={{color: "grey"}}>Sign-up or Login</h4>
-            <div style={{
-              width: "100%",
-              margin: "auto",
-            }} id={"firebase-auth-container"}/>
-            <Link href="/">Back to Main Page</Link>
-            <hr/>
-            <h5>Don't have an account?</h5>
-            <p>Click on one of the buttons above and we will make an account for you</p>
-          </div>
+    <div className="page-wrapper">
+      <div className="login-page">
+        <div className="login-container">
+            <div className="login-card">
+              <div className="login-header">
+                <h2>High-Resolution Course Feedback</h2>
+                <p>Choose your preferred sign-in method</p>
+              </div>
+              
+              <div id="firebase-auth-container" className="auth-container" />
+              
+              <div className="login-footer">
+                <div className="divider">
+                  <span>New to HRCF?</span>
+                </div>
+                <p className="signup-text">
+                  Click any sign-in option above and we'll create an account for you automatically.
+                </p>
+              </div>
+            </div>
         </div>
-      </main>
-      {/*
-      <div id="loader-wrapper" className={(isLoading || isLoggedIn) ? styles.visible : styles.hidden}>
-        <div id="loader"/>
       </div>
-      */}
-    </NavBarContainer>
+    </div>
   )
 }
 
