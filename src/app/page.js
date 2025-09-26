@@ -9,7 +9,6 @@ import {
   faChartLine, 
   faClock, 
   faUsers, 
-  faShieldAlt,
   faQuestionCircle,
   faEnvelope,
   faCalendarAlt,
@@ -129,14 +128,14 @@ export default function Home() {
               description="Get feedback when it matters most - weekly insights help you adjust your teaching in real-time."
             />
             <FeatureCard
-              icon={faShieldAlt}
-              title="Anonymous & Safe"
-              description="Students provide honest feedback through anonymous surveys."
+              icon={faEnvelope}
+              title="Effortless Outreach"
+              description="Anonymous survey requests are sent directly to your students' inbox."
             />
             <FeatureCard
               icon={faChartLine}
               title="Data-Driven Insights"
-              description="Weekly mood graphs and participation rates help you track class sentiment over time."
+              description="Weekly mood graphs and feedback help you track class sentiment over time."
             />
           </div>
         </div>
