@@ -91,9 +91,10 @@ export const EditableRow = ({index, formikProps, dragHandleProps, isDragging}) =
   const [promptField, promptMeta]= useField(`questions.${index}.prompt`)
 
   const handleDeleteQuestion = (formikProps, index) => {
-    const { questions } = formikProps.values
-    questions.splice(index, 1);
-    formikProps.setFieldValue("questions", questions);
+    const { questions } = formikProps.values;
+    // Create a new array without the deleted question to trigger dirty state
+    const updatedQuestions = questions.filter((_, i) => i !== index);
+    formikProps.setFieldValue("questions", updatedQuestions);
     // Mark form as touched to trigger unsaved changes indicator
     formikProps.setFieldTouched("questions", true);
   }
@@ -135,7 +136,9 @@ export const EditableRow = ({index, formikProps, dragHandleProps, isDragging}) =
 export const QuestionsTable = (props) => {
   const [defaultQues, setDefaultQues] = useState([])
   const [customQues, setCustomQues] = useState({'questions': [], 'previous-questions': []})
+  const [originalCustomQues, setOriginalCustomQues] = useState({'questions': [], 'previous-questions': []})
   const [questionCounter, setQuestionCounter] = useState(1);
+  const [originalQuestionCounter, setOriginalQuestionCounter] = useState(1);
   const [hasReordered, setHasReordered] = useState(false);
 
   const [prevCustomQues, setPrevCustomQues] = useState([])
@@ -181,7 +184,9 @@ export const QuestionsTable = (props) => {
             return obj
           })
           setQuestionCounter(initialCount)
+          setOriginalQuestionCounter(initialCount)
           setCustomQues(data)
+          setOriginalCustomQues(JSON.parse(JSON.stringify(data))) // Deep copy
           setPrevCustomQues(data['previous-questions'])}
         else
           throw new Error('No questions field. Please contact admin.')
@@ -208,6 +213,9 @@ export const QuestionsTable = (props) => {
           })
           // Reset the reordered flag after successful save
           setHasReordered(false);
+          // Update original state to current state after successful save
+          setOriginalCustomQues(JSON.parse(JSON.stringify(newValues)));
+          setOriginalQuestionCounter(questionCounter);
         })
         .catch(() => {
           Swal.fire({
@@ -252,6 +260,16 @@ export const QuestionsTable = (props) => {
     formikProps.setFieldValue('questions', [...questions, newQuestion]);
     // Mark form as touched to trigger unsaved changes indicator
     formikProps.setFieldTouched("questions", true);
+  }
+
+  const handleDiscardChanges = (formikProps) => {
+    // Reset to original state
+    setCustomQues(JSON.parse(JSON.stringify(originalCustomQues)));
+    setQuestionCounter(originalQuestionCounter);
+    setHasReordered(false);
+    
+    // Reset Formik form
+    formikProps.resetForm({ values: originalCustomQues });
   }
 
   return (
@@ -339,6 +357,15 @@ export const QuestionsTable = (props) => {
                         >
                           Add Question
                         </button>
+                        {(formikProps.dirty || hasReordered) && (
+                          <button
+                            type="button"
+                            className="btn-danger"
+                            onClick={()=>{handleDiscardChanges(formikProps)}}
+                          >
+                            Discard Changes
+                          </button>
+                        )}
                         <div className={`save-button-with-indicator ${(formikProps.dirty || hasReordered) ? 'has-changes' : ''}`}>
                           <button 
                             type="submit" 

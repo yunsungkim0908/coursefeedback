@@ -2,26 +2,22 @@
 
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
-import ToggleButton from 'react-bootstrap/ToggleButton'
 import React, { Suspense, useState, useRef, useEffect } from 'react';
-// import firebase from "firebase";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "../globals.css"
 import "../main.css"
-import "../../components/Forms/form.css"
 import { Form, Formik, FieldArray, useField } from "formik";
 import * as Yup from "yup";
-import {TextAreaInputCard, TextInputCard, StarsInput, RadioInput} from "../../components/Forms/form.js"
 import firebase from 'firebase/compat/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
-import { useMediaQuery } from '@react-hook/media-query';
 
 import { firebase_app, db, auth } from '../../components/firebase'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import NavBar from '../../components/NavBar'
 import { Loading } from '../../components/Loading/loading.js'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 
 const SuccessMessage = (succMsg) => {
     Swal.fire({
@@ -46,33 +42,58 @@ const getPlaceholder = function(question) {
 }
 
 export const QuestionBox = ({question, index}) => {
-  switch (question.type) {
-    case 'Text':
-      return <TextAreaInputCard
-        label={question.prompt}
-        name={`answers.${question.qid}`}
-        index={index}
-        placeholder={('placeholder' in question)
-                      ? question.placeholder
-                      : getPlaceholder(question)}
-        type='text'
-      />
-    case 'Numeric':
-      return <TextInputCard
-        label={question.prompt}
-        name={`answers[${question.qid}]`}
-        index={index}
-        placeholder={('placeholder' in question)
-                      ? question.placeholder
-                      : getPlaceholder(question)}
-        type='text'
-      />
-    case 'Rating (1-5)':
-    case 'Rating (Qualitative)':
-      return <ButtonInput question={question} index={index}/>
-    default:
-      return <></>
-  }
+  const [field, meta] = useField(`answers.${question.qid}`);
+  
+  return (
+    <div className="survey-question">
+      <div className="question-header">
+        <span className="question-number">{index + 1}.</span>
+        <span className="question-label">{question.prompt}</span>
+      </div>
+      <div className="question-input">
+        {(question.type === 'Text') && (
+          <>
+            <textarea 
+              {...field}
+              className={`survey-textarea ${meta.touched && meta.error ? 'error' : ''}`}
+              placeholder={('placeholder' in question) ? question.placeholder : getPlaceholder(question)}
+              rows={1}
+              ref={(textarea) => {
+                if (textarea) {
+                  // Set initial height to fit placeholder
+                  textarea.style.height = 'auto';
+                  textarea.style.height = textarea.scrollHeight + 'px';
+                }
+              }}
+              onInput={(e) => {
+                e.target.style.height = 'auto';
+                e.target.style.height = e.target.scrollHeight + 'px';
+              }}
+            />
+            {meta.touched && meta.error && (
+              <span className="field-error">{meta.error}</span>
+            )}
+          </>
+        )}
+        {(question.type === 'Numeric') && (
+          <>
+            <input 
+              {...field}
+              type="text"
+              className={`survey-input ${meta.touched && meta.error ? 'error' : ''}`}
+              placeholder={('placeholder' in question) ? question.placeholder : getPlaceholder(question)}
+            />
+            {meta.touched && meta.error && (
+              <span className="field-error">{meta.error}</span>
+            )}
+          </>
+        )}
+        {(question.type === 'Rating (1-5)' || question.type === 'Rating (Qualitative)') && (
+          <ButtonInput question={question}/>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function SurveyContent() {
@@ -231,82 +252,77 @@ function SurveyContent() {
 
   return (
     <div className="page-wrapper">
-      <NavBar breadcrumbs={breadcrumbs} />
-      <div className="page-content">
-        <div className="container">
-        <div className="row">
-          <div className="col">
-            <div className="response-card mt-4 mx-auto">
-              <div className="card-body">
-                <h1>{header}</h1>
-                <p>{desc}</p>
-                {isPreview &&
-                <p>
-                  <Link
-                    href={{
-                      pathname: "/course",
-                      search: `?callNumber=${callNumber}&classHash=${classHash}&user=preview`
+      <div className="survey-page">
+        <div className="survey-container">
+          {/* Survey Header */}
+          <div className="survey-header-card">
+            <div className="survey-header-content">
+              <h1 className="survey-title">{header}</h1>
+              <p className="survey-description">{desc}</p>
+              {isPreview && (
+                <Link
+                  href={{
+                    pathname: "/course",
+                    search: `?callNumber=${callNumber}&classHash=${classHash}&user=preview`
                   }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      color: '#3b82f6',
-                      textDecoration: 'none',
-                      fontWeight: '500'
-                    }}
-                  >
-                    <span style={{ fontSize: '14px', lineHeight: '1' }}>←</span>
-                    <span>Go back</span>
-                  </Link>
-                </p>}
-              </div>
+                  className="back-to-settings"
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} />
+                  <span>Back to Course Settings</span>
+                </Link>
+              )}
             </div>
-
-
-            <Formik
-              validateOnChange
-              enableReinitialize={true}
-              initialValues={initValues}
-              validationSchema={validationSchema}
-              onSubmit={(x) => onSubmit(x)}
-            >
-              <Form onKeyDown={onKeyDown} style={{ width: "100%" }}>
-                <FieldArray
-                  name="answers"
-                  render={() =>
-                    {
-                      if (closed) {
-                        return (
-                          <div className="response-card mt-4 mx-auto">
-                          <div className="card-body" >
-                            <p style={{'fontSize':'1.2rem'}}>We're sorry, but this week's survey has been closed.</p>
-                          </div>
-                          </div>
-                        )
-                      } else {
-                        return (questions.questions.map((question, index) =>
-                        <QuestionBox key={question.qid} question={question} index={index}/>))
-                    }
-                   }
-                  }
-                />
-                <div className="response-card mt-4 mx-auto" style={{maxWidth: 800}}>
-                  <div className="card-body">
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      className="mx-auto"
-                      disabled={isPreview}
-                    >
-                       Submit my feedback!
-                    </Button>
-                  </div>
-                </div>
-              </Form>
-            </Formik>
           </div>
-        </div>
+
+
+          {/* Survey Form */}
+          <Formik
+            validateOnChange
+            enableReinitialize={true}
+            initialValues={initValues}
+            validationSchema={validationSchema}
+            onSubmit={(x) => onSubmit(x)}
+          >
+            <Form onKeyDown={onKeyDown} className="survey-form">
+              <FieldArray
+                name="answers"
+                render={() => {
+                  if (closed) {
+                    return (
+                      <div className="survey-closed-card">
+                        <FontAwesomeIcon icon={faExclamationCircle} className="closed-icon" />
+                        <h2>Survey Closed</h2>
+                        <p>We're sorry, but this week's survey has been closed.</p>
+                      </div>
+                    )
+                  } else {
+                    return (
+                      <div className="survey-questions">
+                        {questions.questions.map((question, index) =>
+                          <QuestionBox key={question.qid} question={question} index={index}/>
+                        )}
+                      </div>
+                    )
+                  }
+                }}
+              />
+              {!closed && (
+                <div className="survey-submit-section">
+                  <button
+                    type="submit"
+                    className={`btn-primary survey-submit ${isPreview ? 'disabled' : ''}`}
+                    disabled={isPreview}
+                  >
+                    <FontAwesomeIcon icon={faCheckCircle} />
+                    Submit my feedback
+                  </button>
+                  {isPreview && (
+                    <p className="preview-note">This is a preview. Submissions are disabled.</p>
+                  )}
+                </div>
+              )}
+            </Form>
+          </Formik>
         </div>
       </div>
     </div>
@@ -321,7 +337,7 @@ export default function SurveyPage() {
   );
 }
 
-const ButtonInput = ({question, index}) => {
+const ButtonInput = ({question}) => {
   const [field, meta, helpers] = useField(`answers.${question.qid}`)
 
   let radios
@@ -336,40 +352,25 @@ const ButtonInput = ({question, index}) => {
       radios = []
   }
 
-  const isNarrowScreen = useMediaQuery('(max-width: 550px)')
-
-  return <>
-    <div className="response-card mt-4 mx-auto">
-    <div className="card-body">
-      <label className="form-label">
-        <b>{index+1}. </b>{question.prompt}
-      </label>
-      <ButtonGroup
-        vertical={isNarrowScreen}
-        className="button-group"
-      >
-        {radios.map((radio, idx) => (
-          <ToggleButton
-            key={idx}
-            id={`radio-${question.qid}-${idx}`}
+  return (
+    <div className="rating-options">
+      {radios.map((radio, idx) => (
+        <label key={idx} className="rating-option">
+          <input
             type="radio"
-            variant={'outline-primary'}
             name={question.qid}
             value={radio}
             checked={field.value === radio}
             onChange={(e) => helpers.setValue(e.currentTarget.value)}
-            className='radio-button-fixed'
-          >
-            {radio}
-          </ToggleButton>
-        ))}
-      </ButtonGroup>
-      {meta.touched && meta.error &&
-      <div className="error-space">
-        <span className="error">{meta.error}</span>
-      </div>}
+            className="rating-input"
+          />
+          <span className="rating-label">{radio}</span>
+        </label>
+      ))}
+      {meta.touched && meta.error && (
+        <span className="field-error">{meta.error}</span>
+      )}
     </div>
-  </div>
-  </>
+  )
 }
 
