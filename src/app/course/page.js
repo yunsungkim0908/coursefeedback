@@ -90,6 +90,7 @@ const TimelineSection = () => (
 
 export default function Page () {
   const [signedIn, setSignedIn] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
   const [courseData, setCourseData] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -108,7 +109,9 @@ export default function Page () {
     const unregisterAuthObserver = auth.onAuthStateChanged(user => {
       setSignedIn(!!user);
       if (!user){
-        router.push('/login')
+        router.push('/')
+      } else {
+        setAuthChecking(false);
       }
     });
     return () => unregisterAuthObserver();
@@ -195,6 +198,19 @@ export default function Page () {
       href: null // Current page, so no href
     }
   ];
+
+  // Show loading while checking authentication
+  if (authChecking) {
+    return (
+      <div className="page-wrapper">
+        <NavBar />
+        <div className="auth-checking-container">
+          <div className="loading-spinner"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-wrapper">

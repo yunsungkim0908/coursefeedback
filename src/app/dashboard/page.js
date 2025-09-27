@@ -92,7 +92,7 @@ export default function Page() {
       user => {
         setSignedIn(!!user);
         if (!user){
-          router.push('/login')
+          router.push('/')
         } else {
           loadCourses(user);
         }
