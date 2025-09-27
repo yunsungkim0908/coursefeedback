@@ -100,6 +100,7 @@ function SurveyContent() {
   const [questions, setQuestions] = useState({'questions': [], 'classWeek': null})
   const [invalidURL, setInvalidURL] = useState(false)
   const [isPreview, setIsPreview] = useState(false)
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(true)
 
   const search = useSearchParams()
   let callNumber = search.get("callNumber")
@@ -124,6 +125,7 @@ function SurveyContent() {
   useEffect(() => {
     if(!classHash || !userHash) {
       setInvalidURL(true)
+      setIsLoadingQuestions(false)
       return
     } else if (userHash === 'preview') {
       setIsPreview(true)
@@ -141,14 +143,21 @@ function SurveyContent() {
             const customQuestions = values[1] || []
             const qlist = defaultQuestions.concat(customQuestions)
             setQuestions({'questions': qlist})
+            setIsLoadingQuestions(false)
           }).catch((error) => {
             console.error('Error loading questions:', error)
+            setIsLoadingQuestions(false)
           })
+        } else {
+          setIsLoadingQuestions(false)
         }
       })
     } else {
-      if (!globalWeek)
+      if (!globalWeek) {
         setInvalidURL(true)
+        setIsLoadingQuestions(false)
+        return
+      }
       readDocAndDo(
         doc(doc(db, 'surveyQuestions', globalWeek), classHash, userHash),
         (snap) => {
@@ -156,6 +165,7 @@ function SurveyContent() {
             setClosed(true)
           else
             setQuestions(snap.data())
+          setIsLoadingQuestions(false)
         }
       )
     }
@@ -294,7 +304,15 @@ function SurveyContent() {
               <FieldArray
                 name="answers"
                 render={() => {
-                  if (closed) {
+                  if (isLoadingQuestions) {
+                    return (
+                      <div className="survey-loading-card">
+                        <div className="loading-spinner"></div>
+                        <h2>Loading Survey...</h2>
+                        <p>Please wait while we prepare your questions.</p>
+                      </div>
+                    )
+                  } else if (closed) {
                     return (
                       <div className="survey-closed-card">
                         <FontAwesomeIcon icon={faExclamationCircle} className="closed-icon" />

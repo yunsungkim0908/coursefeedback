@@ -147,7 +147,6 @@ export default function Page() {
           <div className="welcome-section">
             <div className="welcome-content">
               <h1>Welcome back, {auth.currentUser?.displayName?.split(' ')[0] || 'User'}!</h1>
-              <p>Monitor your course feedback and track student engagement with real-time insights.</p>
             </div>
           </div>
 

@@ -3,10 +3,9 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { auth } from '../../components/firebase'
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import '../globals.css'
 import '../main.css'
-import '../../components/Loading/loading.css'
 import 'firebaseui/dist/firebaseui.css'
 import firebase from 'firebase/compat/app'
 import 'firebase/auth'
@@ -16,6 +15,8 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 export default function Page() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticating, setIsAuthenticating] = useState(false)
 
   useEffect(() => {
     import("firebaseui")
@@ -25,9 +26,11 @@ export default function Page() {
         const unregisterAuthObserver = auth.onAuthStateChanged(
           user => {
             if (user != null){
+              setIsAuthenticating(true)
               router.push('/dashboard')
             }
             else {
+              setIsLoading(false)
               ui.start("#firebase-auth-container", {
                 signInOptions: [
                   {
@@ -44,11 +47,15 @@ export default function Page() {
                   firebase.auth.EmailAuthProvider.PROVIDER_ID,
                 ],
                 signInFlow: 'popup',
-                callbacks: {signInSuccess: () => false}
+                callbacks: {
+                  signInSuccessWithAuthResult: () => {
+                    setIsAuthenticating(true)
+                    return false
+                  }
+                }
                 // signInSuccessUrl: '/dashboard'
                 // Other config options...
               })
-
             }
           })
 
@@ -58,6 +65,16 @@ export default function Page() {
 
   return (
     <div className="page-wrapper">
+      {/* Loading screen for authentication */}
+      {isAuthenticating && (
+        <div className="auth-overlay">
+          <div className="auth-overlay-content">
+            <div className="loading-spinner"></div>
+            <p>Signing you in...</p>
+          </div>
+        </div>
+      )}
+      
       <div className="login-page">
         <div className="login-container">
             <Link href="/" className="back-to-main">
@@ -70,7 +87,14 @@ export default function Page() {
                 <p>Choose your preferred sign-in method</p>
               </div>
               
-              <div id="firebase-auth-container" className="auth-container" />
+              <div id="firebase-auth-container" className="auth-container">
+                {isLoading && (
+                  <div className="auth-loading">
+                    <div className="loading-spinner"></div>
+                    <p>Loading sign-in options...</p>
+                  </div>
+                )}
+              </div>
               
               <div className="login-footer">
                 <div className="divider">

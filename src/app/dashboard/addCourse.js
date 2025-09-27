@@ -97,11 +97,13 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
 
       const courseData = {
         ...values,
+        completed: 0,
         classBegins: formatDate(values.classBegins),
         firstWeek: formatDate(values.firstWeek),
         lastWeek: formatDate(values.lastWeek),
         hash,
         createdBy: user.uid,
+        createdByEmail: user.email,
         admins: [user.email],
         createdAt: new Date(),
       };
@@ -111,7 +113,7 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
       const questionRef = doc(db, "questions", hash);
 
       batch.set(courseRef, courseData);
-      batch.set(rosterRef, { "id": [], "name": [] });
+      batch.set(rosterRef, { "roster": [] });
       batch.set(questionRef, { "previous-questions": [], "questions": [] });
 
       await batch.commit();
@@ -156,7 +158,7 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
         numWeeks: null,
       }}
     >
-      {({ handleSubmit, handleChange, values, errors, setFieldValue }) => {
+      {({ handleSubmit, handleChange, handleBlur, values, errors, touched, setFieldValue, setFieldTouched }) => {
         
         useEffect(() => {
           if (!values.classBegins) return;
@@ -187,7 +189,7 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
               <FormField
                 label="Course Name"
                 tooltip={tooltips.courseName}
-                error={errors.courseName}
+                error={touched.courseName && errors.courseName}
                 required
               >
                 <input
@@ -196,14 +198,15 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
                   placeholder="e.g., Introduction to Computer Science"
                   value={values.courseName}
                   onChange={handleChange}
-                  className={`form-input ${errors.courseName ? 'error' : ''}`}
+                  onBlur={handleBlur}
+                  className={`form-input ${touched.courseName && errors.courseName ? 'error' : ''}`}
                 />
               </FormField>
 
               <FormField
                 label="Call Number"
                 tooltip={tooltips.callNumber}
-                error={errors.callNumber}
+                error={touched.callNumber && errors.callNumber}
                 required
               >
                 <input
@@ -212,14 +215,15 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
                   placeholder="e.g., CS109"
                   value={values.callNumber}
                   onChange={handleChange}
-                  className={`form-input ${errors.callNumber ? 'error' : ''}`}
+                  onBlur={handleBlur}
+                  className={`form-input ${touched.callNumber && errors.callNumber ? 'error' : ''}`}
                 />
               </FormField>
 
               <FormField
                 label="Surveys per Student"
                 tooltip={tooltips.surveysPerStudent}
-                error={errors.surveysPerStudent}
+                error={touched.surveysPerStudent && errors.surveysPerStudent}
                 required
               >
                 <input
@@ -229,23 +233,28 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
                   max="10"
                   value={values.surveysPerStudent}
                   onChange={handleChange}
-                  className={`form-input ${errors.surveysPerStudent ? 'error' : ''}`}
+                  onBlur={handleBlur}
+                  className={`form-input ${touched.surveysPerStudent && errors.surveysPerStudent ? 'error' : ''}`}
                 />
               </FormField>
 
               <FormField
                 label="Class Begins"
                 tooltip={tooltips.classBegins}
-                error={errors.classBegins}
+                error={touched.classBegins && errors.classBegins}
                 required
               >
                 <DatePicker
                   selected={values.classBegins}
-                  onChange={(date) => setFieldValue('classBegins', date)}
+                  onChange={(date) => {
+                    setFieldValue('classBegins', date);
+                    setFieldTouched('classBegins', true, false);
+                  }}
+                  onBlur={() => setFieldTouched('classBegins', true, false)}
                   customInput={
                     <CustomDateInput 
                       placeholder="Select start date"
-                      error={errors.classBegins}
+                      error={touched.classBegins && errors.classBegins}
                     />
                   }
                   filterDate={(date) => (getDay(date) !== 0 && getDay(date) !== 6)}
@@ -256,16 +265,20 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
               <FormField
                 label="First Survey"
                 tooltip={tooltips.firstWeek}
-                error={errors.firstWeek}
+                error={touched.firstWeek && errors.firstWeek}
                 required
               >
                 <DatePicker
                   selected={values.firstWeek}
-                  onChange={(date) => setFieldValue('firstWeek', date)}
+                  onChange={(date) => {
+                    setFieldValue('firstWeek', date);
+                    setFieldTouched('firstWeek', true, false);
+                  }}
+                  onBlur={() => setFieldTouched('firstWeek', true, false)}
                   customInput={
                     <CustomDateInput 
                       placeholder="Select first survey date"
-                      error={errors.firstWeek}
+                      error={touched.firstWeek && errors.firstWeek}
                     />
                   }
                   minDate={minFirstWeek}
@@ -277,16 +290,20 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
               <FormField
                 label="Last Survey"
                 tooltip={tooltips.lastWeek}
-                error={errors.lastWeek}
+                error={touched.lastWeek && errors.lastWeek}
                 required
               >
                 <DatePicker
                   selected={values.lastWeek}
-                  onChange={(date) => setFieldValue('lastWeek', date)}
+                  onChange={(date) => {
+                    setFieldValue('lastWeek', date);
+                    setFieldTouched('lastWeek', true, false);
+                  }}
+                  onBlur={() => setFieldTouched('lastWeek', true, false)}
                   customInput={
                     <CustomDateInput 
                       placeholder="Select last survey date"
-                      error={errors.lastWeek}
+                      error={touched.lastWeek && errors.lastWeek}
                     />
                   }
                   minDate={minLastWeek}
