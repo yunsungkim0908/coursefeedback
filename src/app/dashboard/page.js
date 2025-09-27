@@ -7,7 +7,7 @@ import "../main.css"
 import { CourseCard, CourseCardSkeleton } from "./courseCard.js"
 import { AddCourse } from "./addCourse.js"
 import { db, auth } from '../../components/firebase'
-import { collection, query, getDocs, where } from "firebase/firestore";
+import { collection, query, getDocs, where, doc, getDoc } from "firebase/firestore";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faPlus, 
@@ -106,15 +106,25 @@ export default function Page() {
       const coursesRef = collection(db, "courses");
       const q = query(coursesRef, where("admins", "array-contains", user.email));
       const qSnap = await getDocs(q);
-      const courses = qSnap.docs.map((snap) => {
-        const data = snap.data();
-        return {
-          ...data,
-          approvalStatus: true
-        };
-      });
-      setUserCourses(courses);
-      setCourseIds(courses.map(c => c.hash));
+      
+      // Get courses and check approval status for each
+      const coursesWithApproval = await Promise.all(
+        qSnap.docs.map(async (snap) => {
+          const data = snap.data();
+          
+          // Check if course exists in approvedCourses collection
+          const approvedDoc = doc(db, 'approvedCourses', data.hash);
+          const approvalSnap = await getDoc(approvedDoc);
+          
+          return {
+            ...data,
+            approvalStatus: approvalSnap.exists()
+          };
+        })
+      );
+      
+      setUserCourses(coursesWithApproval);
+      setCourseIds(coursesWithApproval.map(c => c.hash));
     } catch (error) {
       console.error("Error loading courses:", error);
     } finally {
@@ -144,6 +154,38 @@ export default function Page() {
 
           {/* Main Content */}
           <div className="courses-section">
+            {/* Getting Started Section */}
+            <div className="getting-started-section">
+              <div className="form-instructions">
+                <h4>Creating a New Survey</h4>
+                <div className="instruction-steps">
+                  <div className="instruction-step">
+                    <span className="step-number">1</span>
+                    <div className="step-content">
+                      <p><strong>Fill out the course form</strong> by clicking "Add New Course" below</p>
+                    </div>
+                  </div>
+                  <div className="instruction-step">
+                    <span className="step-number">2</span>
+                    <div className="step-content">
+                      <p><strong>Send us these items</strong> to <a href="mailto:hrcf@cs.stanford.edu">hrcf@cs.stanford.edu</a>:</p>
+                      <ul>
+                        <li>Your school profile page (to verify your email and affiliation)</li>
+                        <li>The unique course ID generated after form submission</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="instruction-step">
+                    <span className="step-number">3</span>
+                    <div className="step-content">
+                      <p><strong>We'll review and approve</strong> your course survey!</p>
+                      <p className="text-muted">While we review, you can set up your course roster, custom questions, and admin list.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="section-header">
               <div className="header-title-row">
                 <div className="header-left">

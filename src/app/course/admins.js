@@ -37,10 +37,14 @@ const AddAdmin = ({admins, setAdmins, submit}) => {
           className="btn-icon primary"
           onClick={() => {
             if (emailSchema.isValidSync(newAdmin.value)){
-              const newAdmins = [...admins, newAdmin.value]
-              setAdmins(newAdmins)
-              submit(newAdmins)
-              newAdminHelpers.setValue("")
+              if (admins.includes(newAdmin.value)) {
+                newAdminHelpers.setError("Admin already exists")
+              } else {
+                const newAdmins = [...admins, newAdmin.value]
+                setAdmins(newAdmins)
+                submit(newAdmins)
+                newAdminHelpers.setValue("")
+              }
             } else {
               newAdminHelpers.setError("Invalid email")
             }

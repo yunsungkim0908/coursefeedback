@@ -5,7 +5,7 @@ import 'firebase/compat/auth';
 import Swal from "sweetalert2";
 import * as formik from 'formik'
 import * as Yup from "yup";
-import { ErrorMessage, SuccessMessage } from "../../components/utils.js"
+import { truncateString } from "../../components/utils.js"
 import { doc, collection, writeBatch, setDoc } from "firebase/firestore";
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
@@ -89,8 +89,17 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
       const hash = generateHash();
       const batch = writeBatch(db);
 
+      // Convert dates to mm/dd/yyyy format strings
+      const formatDate = (date) => {
+        if (!date) return null;
+        return date.toLocaleDateString('en-US');
+      };
+
       const courseData = {
         ...values,
+        classBegins: formatDate(values.classBegins),
+        firstWeek: formatDate(values.firstWeek),
+        lastWeek: formatDate(values.lastWeek),
         hash,
         createdBy: user.uid,
         admins: [user.email],
@@ -102,21 +111,31 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
       const questionRef = doc(db, "questions", hash);
 
       batch.set(courseRef, courseData);
-      batch.set(rosterRef, { roster: [] });
-      batch.set(questionRef, { questions: [] });
+      batch.set(rosterRef, { "id": [], "name": [] });
+      batch.set(questionRef, { "previous-questions": [], "questions": [] });
 
       await batch.commit();
 
-      setCourses([...courses, { ...courseData, approvalStatus: true }]);
+      setCourses([...courses, { ...courseData, approvalStatus: false }]);
       setCourseIds([...courseIds, hash]);
       
-      SuccessMessage(`Course "${values.courseName}" created successfully! Course ID: ${hash}`);
+      Swal.fire({
+        icon: "success",
+        title: "Almost Done!",
+        html: `<p>Your Course ID is: <strong>${hash}</strong></p><p>Please complete the next steps to finish setting up your survey.</p>`,
+        confirmButtonColor: "#3b82f6"
+      });
       resetForm();
       if (onSuccess) onSuccess();
       
     } catch (error) {
       console.error("Error creating course:", error);
-      ErrorMessage("Failed to create course. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to create course",
+        text: "Please try again.",
+        confirmButtonColor: "#3b82f6"
+      });
     } finally {
       setIsSubmitting(false);
       setSubmitting(false);
@@ -164,35 +183,6 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
 
         return (
           <form onSubmit={handleSubmit} className="add-course-form">
-            <div className="form-instructions">
-              <h4>Getting Started</h4>
-              <div className="instruction-steps">
-                <div className="instruction-step">
-                  <span className="step-number">1</span>
-                  <div className="step-content">
-                    <p><strong>Fill out the form below</strong> with your course details</p>
-                  </div>
-                </div>
-                <div className="instruction-step">
-                  <span className="step-number">2</span>
-                  <div className="step-content">
-                    <p><strong>Send us these items</strong> to <a href="mailto:hrcf@cs.stanford.edu">hrcf@cs.stanford.edu</a>:</p>
-                    <ul>
-                      <li>Your school profile page (to verify your email and affiliation)</li>
-                      <li>The unique course ID generated after form submission</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="instruction-step">
-                  <span className="step-number">3</span>
-                  <div className="step-content">
-                    <p><strong>We'll review and approve</strong> your course survey!</p>
-                    <p className="text-muted">While we review, you can set up your course roster, custom questions, and admin list.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="form-grid">
               <FormField
                 label="Course Name"

@@ -120,7 +120,7 @@ export default function Home() {
             <FeatureCard
               icon={faUsers}
               title="Smart Sampling"
-              description="Students are randomly selected for surveys each week, enabling representative feedback without survey fatigue."
+              description="Students are randomly selected each week to provide representative feedback while avoiding survey fatigue."
             />
             <FeatureCard
               icon={faClock}
@@ -129,12 +129,12 @@ export default function Home() {
             />
             <FeatureCard
               icon={faEnvelope}
-              title="Effortless Outreach"
+              title="Simple Access"
               description="Anonymous survey requests are sent directly to your students' inbox."
             />
             <FeatureCard
               icon={faChartLine}
-              title="Data-Driven Insights"
+              title="Class Sentiment"
               description="Weekly mood graphs and feedback help you track class sentiment over time."
             />
           </div>

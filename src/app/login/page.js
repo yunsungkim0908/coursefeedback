@@ -12,7 +12,7 @@ import firebase from 'firebase/compat/app'
 import 'firebase/auth'
 import NavBar from '../../components/NavBar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faChartLine, faShieldAlt, faUsers, faBookOpen } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 export default function Page() {
   const router = useRouter()
@@ -60,6 +60,10 @@ export default function Page() {
     <div className="page-wrapper">
       <div className="login-page">
         <div className="login-container">
+            <Link href="/" className="back-to-main">
+              <FontAwesomeIcon icon={faArrowLeft} />
+              <span>Back to main page</span>
+            </Link>
             <div className="login-card">
               <div className="login-header">
                 <h2>High-Resolution Course Feedback</h2>

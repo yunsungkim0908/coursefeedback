@@ -25,7 +25,8 @@ import {
   faUsers,
   faUserShield,
   faBars,
-  faTimes
+  faTimes,
+  faCopy
 } from '@fortawesome/free-solid-svg-icons'
 import NavBar from '../../components/NavBar'
 
@@ -210,8 +211,32 @@ export default function Page () {
       {/* Sidebar */}
       <div className={`settings-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <h3>Course Settings</h3>
-          <p className="text-muted text-sm">{className?.toUpperCase()}</p>
+          {courseData && (
+            <div className="course-info">
+              <p className="course-name">{courseData.courseName}</p>
+              <p className="text-muted text-sm">{courseData.callNumber}</p>
+              <div 
+                className="course-id-sidebar" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(instructorHash);
+                  Swal.fire({
+                    icon: "success",
+                    title: "Copied!",
+                    text: `Course ID: ${instructorHash}`,
+                    timer: 1500,
+                    showConfirmButton: false,
+                    position: "top-end",
+                    toast: true
+                  });
+                }}
+              >
+                <FontAwesomeIcon icon={faCopy} size="sm" />
+                <span>ID: {instructorHash}</span>
+              </div>
+            </div>
+          )}
         </div>
         
         <Link 
@@ -261,10 +286,10 @@ export default function Page () {
         <div className="container">
           <div className="content-wrapper">
             {/* Page Header */}
-            <div className="page-header-clean">
+            {/* <div className="page-header-clean">
               <h1>{courseData?.courseName || 'Course Settings'}</h1>
               <p className="page-subtitle">{className?.toUpperCase()}</p>
-            </div>
+            </div> */}
 
             {/* Dynamic Content */}
             {renderSection()}
