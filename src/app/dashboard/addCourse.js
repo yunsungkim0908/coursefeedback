@@ -55,7 +55,7 @@ const schema = Yup.object().shape({
   classBegins: Yup.date().required('Class start date is required'),
   firstWeek: Yup.date().required('First survey date is required'),
   lastWeek: Yup.date().required('Last survey date is required'),
-  surveysPerStudent: Yup.number()
+  numQuery: Yup.number()
     .min(1, 'Must be at least 1')
     .max(10, 'Must be 10 or less')
     .required('Required'),
@@ -73,7 +73,7 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
   const tooltips = {
     courseName: "Name of your course",
     callNumber: "Course call number that will show up in survey emails",
-    surveysPerStudent: "How many times to request feedback from each student",
+    numQuery: "How many times to request feedback from each student",
     classBegins: "Used to track weeks throughout the survey",
     firstWeek: "Survey should begin in or after the 2nd week of the course",
     lastWeek: "The last survey will be sent out on the Monday of the chosen week",
@@ -154,7 +154,7 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
         classBegins: null,
         firstWeek: null,
         lastWeek: null,
-        surveysPerStudent: 2,
+        numQuery: 2,
         numWeeks: null,
       }}
     >
@@ -222,19 +222,19 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
 
               <FormField
                 label="Surveys per Student"
-                tooltip={tooltips.surveysPerStudent}
-                error={touched.surveysPerStudent && errors.surveysPerStudent}
+                tooltip={tooltips.numQuery}
+                error={touched.numQuery && errors.numQuery}
                 required
               >
                 <input
                   type="number"
-                  name="surveysPerStudent"
+                  name="numQuery"
                   min="1"
                   max="10"
-                  value={values.surveysPerStudent}
+                  value={values.numQuery}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`form-input ${touched.surveysPerStudent && errors.surveysPerStudent ? 'error' : ''}`}
+                  className={`form-input ${touched.numQuery && errors.numQuery ? 'error' : ''}`}
                 />
               </FormField>
 
@@ -317,7 +317,7 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
               <div className="survey-summary">
                 <h4>Survey Summary</h4>
                 <p>Your course will run surveys for <strong>{values.numWeeks} weeks</strong></p>
-                <p>Each student will receive <strong>{values.surveysPerStudent} surveys</strong> throughout the term</p>
+                <p>Each student will receive <strong>{values.numQuery} surveys</strong> throughout the term</p>
               </div>
             )}
 
