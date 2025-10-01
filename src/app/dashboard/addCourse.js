@@ -105,7 +105,6 @@ export const AddCourse = ({ db, coursesState, courseIdState, user, onSuccess }) 
         createdBy: user.uid,
         createdByEmail: user.email,
         admins: [user.email],
-        createdAt: new Date(),
       };
 
       const courseRef = doc(db, "courses", hash);
